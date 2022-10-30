@@ -1,0 +1,88 @@
+.fullQuestion {
+    background-color: #357ecf;
+    width: 100vw;
+    height: 100vh;
+    font-size: 72px;
+    font-weight: 900;
+    color: #ededed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.questionOpenForAnswers {
+    background-color: #459e4b;
+}
+
+.bottomPanel {
+    cursor: default;
+    position: fixed;
+    bottom :0;
+    margin: 20px auto;
+    width: 100%;
+
+    font-size: 48px;
+    font-weight: bold;
+    color: #ededed;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.playQuestionButton {
+    font-size: 72px;
+    cursor: pointer;
+    padding: 5px;
+    margin: 30px
+}
+
+.answeringPlayerName {
+    margin-left: 15px;
+    color: #ffa436;
+}
+
+.isAnswerCorrectContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.isAnswerCorrect {
+    margin-right: 20px;
+}
+
+.playerAnswerButton {
+    font-size: 72px;
+    cursor: pointer;
+    padding: 0 10px;
+    margin-right: 20px;
+}
+
+.playerAnswerButton:hover {
+    color: #beccda;
+}
+
+.homeButton {
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 900;
+    color: #ededed;
+    background: #5358c8;
+    cursor: pointer;
+    margin-bottom: 30px;
+
+    border: 2px solid #ededed;
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 10px 10px 10px 5px rgba(11,21,45,0.3);
+}
+
+.homeButton:hover {
+    background: #3e4293;
+}

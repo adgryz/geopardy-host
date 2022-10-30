@@ -1,0 +1,28 @@
+.scoreContainer {
+    display: flex;
+    align-items: center;
+    color: #303030;
+}
+
+.playerName {
+    font-size: 24px;
+    font-weight: 900;
+    cursor: default;
+    display: flex;
+    justify-content: center
+}
+
+.score {
+    font-size: 24px;
+    font-weight: 900;
+    cursor: default;
+    text-align: center;
+}
+
+.playersContainer {
+    display: flex;
+    justify-content: space-around;
+    width: 1500px;
+    margin-bottom: 10px;
+}
+

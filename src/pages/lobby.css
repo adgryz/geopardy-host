@@ -1,0 +1,39 @@
+.lobbyContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+
+    font-size: 24px;
+}
+
+.gameIdInfo {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.gameId {
+    font-weight: 900;
+    color: navy;
+}
+
+.waitingForPlayers {
+    margin-bottom: 10px;
+}
+
+.lobbyLabel {
+    margin-bottom: 10px;
+}
+
+.playersList {
+    margin-bottom: 10px;
+}
+
+.player {
+    margin-bottom: 5px;
+    font-weight: bold;
+}

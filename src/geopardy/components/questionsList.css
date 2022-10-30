@@ -1,0 +1,36 @@
+.question {
+    background-color: #357ecf;
+    border: 3px solid #ededed;
+    border-radius: 5px;
+    font-size: 36px;
+    font-weight: 900;
+    color: #ededed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 140px;
+
+    cursor: pointer;
+}
+
+.question:hover {
+    background-color: #1a62b1;
+}
+
+.questionAnswered {
+    cursor: unset;
+}
+
+.questionAnswered:hover {
+    background-color: #357ecf;
+}
+
+.questionPoints {
+    display: flex;
+    align-items: center;
+}
+
+.currency {
+    color: #ffa436;
+    margin-left: 10px;
+}
