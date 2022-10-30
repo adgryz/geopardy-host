@@ -4,9 +4,11 @@ import io from "socket.io-client";
 
 import { IGameSetup, Player } from "./geopardyTypes";
 import { gameSetup } from "./gameSetup";
+import { getUseSocket } from "./useSocket";
 
 const socket = io("https://geopargygame.herokuapp.com/");
 // const socket = io("http://localhost:3003");
+const useSocket = getUseSocket(socket);
 
 const CONNECT = "connect";
 const DISCONNECT = "disconnect";
@@ -84,6 +86,8 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   const answeringPlayerName = answeringPlayerId
     ? players.find((player) => player.id === answeringPlayerId)?.name
     : undefined;
+
+  // State handlers
 
   const startQuestion = (questionId: string) => {
     const newGame = setQuestionAnswered(questionId);
@@ -166,82 +170,52 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     sendNoAnswer();
   };
 
-  useEffect(() => {
-    socket.on(CONNECT, () => {
-      setIsConnected(true);
-    });
+  // Socket Listeners
 
-    return () => {
-      socket.off(CONNECT);
-    };
-  }, []);
+  useSocket(CONNECT, () => {
+    setIsConnected(true);
+  });
 
-  useEffect(() => {
-    socket.on(DISCONNECT, () => {
-      setIsConnected(false);
-    });
+  useSocket(DISCONNECT, () => {
+    setIsConnected(false);
+  });
 
-    return () => {
-      socket.off(DISCONNECT);
-    };
-  }, []);
+  useSocket(
+    RETURN_NEW_GAME,
+    ({ gameId, playersCount }: { gameId: string; playersCount: number }) => {
+      setGameId(gameId);
+      setPlayersCountToStartTheGame(playersCount);
+    }
+  );
 
-  useEffect(() => {
-    socket.on(
-      RETURN_NEW_GAME,
-      ({ gameId, playersCount }: { gameId: string; playersCount: number }) => {
-        setGameId(gameId);
-        setPlayersCountToStartTheGame(playersCount);
-      }
+  useSocket(RETURN_NEW_PLAYERS, (newPlayers: Player[]) => {
+    setPlayers(newPlayers);
+  });
+
+  useSocket(RETURN_START_GAME, () => navigate("/game"));
+
+  useSocket(RETURN_ANSWER_QUESTION, (playerId: string) => {
+    setAnsweringPlayerId(playerId);
+    setPlayers(
+      players.map((player) =>
+        player.id === playerId ? { ...player, isAnswering: true } : player
+      )
     );
-    return () => {
-      socket.off(RETURN_NEW_GAME);
-    };
   });
 
-  useEffect(() => {
-    socket.on(RETURN_NEW_PLAYERS, (newPlayers: Player[]) =>
-      setPlayers(newPlayers)
+  useSocket(RETURN_ANSWER_QUESTION_END, (playerId: string) => {
+    console.log(RETURN_ANSWER_QUESTION_END, playerId);
+    setAnsweringPlayerId(undefined);
+    setPlayers(
+      players.map((player) =>
+        player.id === playerId
+          ? { ...player, isAnswering: false, wasAlreadyAnswering: true }
+          : player
+      )
     );
-    return () => {
-      socket.off(RETURN_NEW_PLAYERS);
-    };
   });
 
-  useEffect(() => {
-    socket.on(RETURN_START_GAME, () => navigate("/game"));
-    return () => {
-      socket.off(RETURN_START_GAME);
-    };
-  });
-
-  useEffect(() => {
-    socket.on(RETURN_ANSWER_QUESTION, (playerId: string) => {
-      console.log(RETURN_ANSWER_QUESTION, playerId);
-      setAnsweringPlayerId(playerId);
-      setPlayers(
-        players.map((player) =>
-          player.id === playerId ? { ...player, isAnswering: true } : player
-        )
-      );
-    });
-
-    socket.on(RETURN_ANSWER_QUESTION_END, (playerId: string) => {
-      console.log(RETURN_ANSWER_QUESTION_END, playerId);
-      setAnsweringPlayerId(undefined);
-      setPlayers(
-        players.map((player) =>
-          player.id === playerId
-            ? { ...player, isAnswering: false, wasAlreadyAnswering: true }
-            : player
-        )
-      );
-    });
-    return () => {
-      socket.off(RETURN_ANSWER_QUESTION);
-      socket.off(RETURN_ANSWER_QUESTION_END);
-    };
-  });
+  // Socket senders
 
   const sendStartQuestion = () => {
     socket.emit(SEND_START_QUESTION, gameId);
