@@ -1,4 +1,4 @@
-import { useState, useEffect, ReactNode, createContext } from "react";
+import { useState, ReactNode, createContext } from "react";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 
@@ -6,8 +6,8 @@ import { IGameSetup, Player } from "./geopardyTypes";
 import { gameSetup } from "./gameSetup";
 import { getUseSocket } from "./useSocket";
 
-const socket = io("https://geopargygame.herokuapp.com/");
-// const socket = io("http://localhost:3003");
+// const socket = io("https://geopargygame.herokuapp.com/");
+const socket = io("http://localhost:3003");
 const useSocket = getUseSocket(socket);
 
 const CONNECT = "connect";

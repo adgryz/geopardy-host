@@ -1,12 +1,23 @@
 import { IGameSetup, IGameSetupBase } from "./geopardyTypes";
+import {
+  faMicrophone,
+  faSpa,
+  faHippo,
+} from "@fortawesome/free-solid-svg-icons";
 
 export const gameSetupBase: IGameSetupBase = {
   finalQuestion: "Wymień 3 noblistów po 2000 roku.",
   firstQuestionsGroup: [
     {
-      groupName: "Siata",
+      groupName: "Sławne Głosy",
+      icon: faMicrophone,
+      questionsGroupType: "sound",
       questions: [
-        { text: "Do ilu punktów jest grany tiebreak?", id: "11" }, // 15
+        {
+          text: "Kto to spiewa?",
+          id: "11",
+          soundUrl: "https://www.computerhope.com/jargon/m/example.mp3",
+        }, // 15
         {
           text: "Co się dzieje gdy zawodnik dostanie czerwoną kartkę?",
           id: "12",
@@ -21,6 +32,8 @@ export const gameSetupBase: IGameSetupBase = {
     },
     {
       groupName: "Kwiatki",
+      icon: faSpa,
+      questionsGroupType: "text",
       questions: [
         {
           text: "Jak nazywa się kwiat, którego nazwa jest jak nazwa broni?",
@@ -33,9 +46,16 @@ export const gameSetupBase: IGameSetupBase = {
       ],
     },
     {
-      groupName: "Chmiel",
+      groupName: "Zwierzontki",
+      icon: faHippo,
+      questionsGroupType: "picture",
       questions: [
-        { text: "Z jakiej część rośliny chmiel dodaje się do piwa?", id: "31" }, // Szyszki
+        {
+          text: "Co to za zwierzę?",
+          id: "31",
+          imageUrl:
+            "https://tvn24.pl/tvnmeteo/najnowsze/cdn-zdjecie21b5abf6bca95661b22e226a0d7ac5db-szop-pracz-to-pozornie-niegrozne-zwierze-2158387/alternates/FOUR_THREE_1280",
+        }, // Szyszki
         { text: "Jak nazywa się piwom, które pije Ferdek Kiepski?", id: "32" }, // Mocny Full
         {
           text: "Jak nazywa się seria komiksów napisana przez Papcia Chmiela?",
@@ -47,6 +67,7 @@ export const gameSetupBase: IGameSetupBase = {
     },
     {
       groupName: "Geografia",
+      questionsGroupType: "text",
       questions: [
         { text: "Jaka jest stolica Austrii?", id: "41" }, // Wiedeń
         { text: "Nad jaką rzeką leży Paryż?", id: "42" }, // Sekwana
@@ -57,6 +78,7 @@ export const gameSetupBase: IGameSetupBase = {
     },
     {
       groupName: "Radom",
+      questionsGroupType: "text",
       questions: [
         { text: "Ile wieży znajduje się na herbie Radomia?", id: "51" }, // 3
         { text: "Po co chwytała Chytra Baba z Radomia?", id: "52" }, // Po Zbyszko 3 Cytryny
@@ -75,6 +97,7 @@ export const gameSetupBase: IGameSetupBase = {
   secondQuestionsGroup: [
     {
       groupName: "Matematyka",
+      questionsGroupType: "text",
       questions: [
         { text: "Ile to 6 * 8 ?", id: "61" }, // 48
         { text: "Ile to 2 + 2 * 2 ?", id: "62" }, // 6
@@ -85,6 +108,7 @@ export const gameSetupBase: IGameSetupBase = {
     },
     {
       groupName: "Duży Ekran",
+      questionsGroupType: "text",
       questions: [
         {
           text: "Jaki aktor przebiera się za mikołaja w serii Listy do M.?",
@@ -101,6 +125,7 @@ export const gameSetupBase: IGameSetupBase = {
     },
     {
       groupName: "WYWARZA",
+      questionsGroupType: "text",
       questions: [
         { text: "DIANY", id: "81" }, // dynia
         { text: "SKOCZNE", id: "82" }, // czosnek
@@ -111,6 +136,7 @@ export const gameSetupBase: IGameSetupBase = {
     },
     {
       groupName: "Kolory",
+      questionsGroupType: "text",
       questions: [
         { text: "Jaki kolor to turkusowy?", id: "91" }, // blady niebiesko zielony
         { text: "Jaki kolor to amarantowy?", id: "92" }, // kardynal, rozowo czerwony
@@ -121,6 +147,7 @@ export const gameSetupBase: IGameSetupBase = {
     },
     {
       groupName: "Karole",
+      questionsGroupType: "text",
       questions: [
         {
           text: "Jak na nazwisko ma słynny polski szczypiornistwa, Karol?",

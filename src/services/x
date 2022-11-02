@@ -1,0 +1,133 @@
+// import { IGameSetup, IGameSetupBase } from "./geopardyTypes";
+
+// export const gameSetupBase: IGameSetupBase = {
+//   finalQuestion: "Wymień 3 noblistów po 2000 roku.",
+//   firstQuestionsGroup: [
+//     {
+//       groupName: "Siata",
+//       questions: [
+//         { text: "tx", id: "11" },
+//         { text: "tx", id: "12" },
+//         { text: "tx", id: "13" },
+//         { text: "tx", id: "14" },
+//         { text: "tx", id: "15" },
+//       ],
+//     },
+//     {
+//       groupName: "Kwiatki",
+//       questions: [
+//         { text: "tx", id: "21" },
+//         { text: "tx", id: "22" },
+//         { text: "tx", id: "23" },
+//         { text: "tx", id: "24" },
+//         { text: "tx", id: "25" },
+//       ],
+//     },
+//     {
+//       groupName: "Przy stole",
+//       questions: [
+//         { text: "tx", id: "31" },
+//         { text: "tx", id: "32" },
+//         { text: "tx", id: "33" },
+//         { text: "tx", id: "34" },
+//         { text: "tx", id: "35" },
+//       ],
+//     },
+//     {
+//       groupName: "Mały ekran",
+//       questions: [
+//         { text: "tx", id: "41" },
+//         { text: "tx", id: "42" },
+//         { text: "tx", id: "43" },
+//         { text: "tx", id: "44" },
+//         { text: "tx", id: "45" },
+//       ],
+//     },
+//     {
+//       groupName: "Globus",
+//       questions: [
+//         { text: "tx", id: "51" },
+//         { text: "tx", id: "52" },
+//         { text: "tx", id: "53" },
+//         { text: "tx", id: "54" },
+//         { text: "tx", id: "55" },
+//       ],
+//     },
+//   ],
+//   secondQuestionsGroup: [
+//     {
+//       groupName: "Wakacje",
+//       questions: [
+//         { text: "tx", id: "61" },
+//         { text: "tx", id: "62" },
+//         { text: "tx", id: "63" },
+//         { text: "tx", id: "64" },
+//         { text: "tx", id: "65" },
+//       ],
+//     },
+//     {
+//       groupName: "Papier",
+//       questions: [
+//         { text: "tx", id: "71" },
+//         { text: "tx", id: "72" },
+//         { text: "tx", id: "73" },
+//         { text: "tx", id: "74" },
+//         { text: "tx", id: "75" },
+//       ],
+//     },
+//     {
+//       groupName: "Tablica",
+//       questions: [
+//         { text: "tx", id: "81" },
+//         { text: "tx", id: "82" },
+//         { text: "tx", id: "83" },
+//         { text: "tx", id: "84" },
+//         { text: "tx", id: "85" },
+//       ],
+//     },
+//     {
+//       groupName: "Fryzury",
+//       questions: [
+//         { text: "tx", id: "91" },
+//         { text: "tx", id: "92" },
+//         { text: "tx", id: "93" },
+//         { text: "tx", id: "94" },
+//         { text: "tx", id: "95" },
+//       ],
+//     },
+//     {
+//       groupName: "Sporty",
+//       questions: [
+//         { text: "tx", id: "101" },
+//         { text: "tx", id: "102" },
+//         { text: "tx", id: "103" },
+//         { text: "tx", id: "104" },
+//         { text: "tx", id: "105" },
+//       ],
+//     },
+//   ],
+// };
+
+// export const gameSetup: IGameSetup = {
+//   ...gameSetupBase,
+//   firstQuestionsGroup: gameSetupBase.firstQuestionsGroup.map(
+//     (questionsGroup) => ({
+//       ...questionsGroup,
+//       questions: questionsGroup.questions.map((question, index) => ({
+//         ...question,
+//         isAnswered: false,
+//         points: 100 * (index + 1),
+//       })),
+//     })
+//   ),
+//   secondQuestionsGroup: gameSetupBase.secondQuestionsGroup.map(
+//     (questionsGroup) => ({
+//       ...questionsGroup,
+//       questions: questionsGroup.questions.map((question, index) => ({
+//         ...question,
+//         isAnswered: false,
+//         points: 100 * (index + 1),
+//       })),
+//     })
+//   ),
+// };
