@@ -36,6 +36,10 @@ interface IGameSetupAbstract<Q> {
 
 export type IGameSetupBase = IGameSetupAbstract<IQuestion>;
 export type IGameSetup = IGameSetupAbstract<FullQuestion>;
+export type ITournamentSetup = {
+  gamesSetups: IGameSetup[];
+  finalGameSetup?: IGameSetup;
+};
 
 export type Player = {
   id: string;
@@ -43,4 +47,10 @@ export type Player = {
   score: number;
   isAnswering: boolean;
   wasAlreadyAnswering?: boolean;
+};
+
+export type Game = {
+  gameId: string;
+  isStarted: boolean;
+  players: Player[];
 };

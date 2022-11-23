@@ -1,4 +1,4 @@
-import { IGameSetup, IGameSetupBase } from "./geopardyTypes";
+import { IGameSetup, IGameSetupBase, ITournamentSetup } from "./geopardyTypes";
 import {
   faMicrophone,
   faSpa,
@@ -187,4 +187,8 @@ export const gameSetup: IGameSetup = {
       })),
     })
   ),
+};
+
+export const tournamentSetup: ITournamentSetup = {
+  gamesSetups: [gameSetup],
 };

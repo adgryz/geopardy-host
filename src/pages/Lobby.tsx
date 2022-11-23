@@ -6,18 +6,25 @@ import { AppContext } from "../services/SocketProvider";
 import "./lobby.css";
 
 export const Lobby = () => {
-  const { gameId, players, playersCountToStartTheGame, sendStartGame } =
-    useContext(AppContext);
+  const {
+    tournamentId,
+    players,
+    playersCountToStartTheTournament,
+    sendStartTournament,
+  } = useContext(AppContext);
   const playersArray = Object.entries(players);
+  const isStartGameDisabled =
+    !playersArray.length ||
+    playersArray.length !== playersCountToStartTheTournament;
 
   return (
     <div className="lobbyContainer">
-      <div className="gameIdInfo">
-        ID gry: <span className="gameId">{gameId}</span>
+      <div className="tournamentIdInfo">
+        ID turnieju: <span className="tournamentId">{tournamentId}</span>
       </div>
       <div className="waitingForPlayers">
         Oczekiwanie na graczy: {playersArray.length}/
-        {playersCountToStartTheGame}
+        {playersCountToStartTheTournament}
       </div>
       <div className="lobbyLabel">Gracze w lobby:</div>
       <div className="playersList">
@@ -28,14 +35,11 @@ export const Lobby = () => {
         ))}
       </div>
       <Button
-        disabled={
-          !playersArray.length ||
-          playersArray.length !== playersCountToStartTheGame
-        }
+        disabled={isStartGameDisabled}
         size="lg"
-        onClick={sendStartGame}
+        onClick={sendStartTournament}
       >
-        Rozpocznij Grę
+        Rozpocznij Turniej
       </Button>
     </div>
   );
