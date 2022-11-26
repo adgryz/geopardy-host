@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSquareCheck,
@@ -11,6 +11,7 @@ import ReactAudioPlayer from "react-audio-player";
 
 import { AppContext } from "../services/SocketProvider";
 import "./question.css";
+import { BackButton } from "./components/BackButton";
 
 export const Question = () => {
   const {
@@ -22,24 +23,23 @@ export const Question = () => {
     handleCorrectAnswer,
     handleWrongAnswer,
     handleNoAnswer,
+    handleQuestionFinished,
   } = useContext(AppContext);
-  const navigate = useNavigate();
   const params = useParams();
 
-  const backToHome = () => navigate("/game");
   const handleBackClick = () => {
     handleNoAnswer();
-    backToHome();
+    handleQuestionFinished();
   };
   const onGoodAnswer = () => {
     handleCorrectAnswer();
-    backToHome();
+    handleQuestionFinished();
   };
 
-  const [isQuestionPlayed, setIsQuestionPlayed] = useState(false);
+  const [isQuestionActive, setIsQuestionActive] = useState(false);
   const onPlayQuestion = () => {
     sendStartQuestion();
-    setIsQuestionPlayed(true);
+    setIsQuestionActive(true);
   };
 
   const currentQuestion =
@@ -73,7 +73,7 @@ export const Question = () => {
   return (
     <div
       className={`colorBackground ${
-        isQuestionPlayed && !answeringPlayerName ? "questionOpenForAnswers" : ""
+        isQuestionActive && !answeringPlayerName ? "questionOpenForAnswers" : ""
       }`}
     >
       <IconsBackground icon={currentQuestion?.icon} />
@@ -100,7 +100,7 @@ export const Question = () => {
         )}
       </div>
       <div className="bottomPanel">
-        {!isQuestionPlayed && !currentQuestion?.soundUrl && (
+        {!isQuestionActive && !currentQuestion?.soundUrl && (
           <div onClick={onPlayQuestion} className="playQuestionButton">
             <FontAwesomeIcon icon={faCirclePlay} />
           </div>
@@ -122,9 +122,7 @@ export const Question = () => {
             </div>
           </>
         )}
-        <div className="homeButton" onClick={handleBackClick}>
-          POWRÓT
-        </div>
+        <BackButton onClick={handleBackClick} />
       </div>
     </div>
   );
@@ -137,10 +135,11 @@ const IconsBackground = ({
 }) => {
   const getRandomSize = () => `${150 + Math.floor(Math.random() * 50)}px`;
   const getIconsRow = (amount: number) => {
-    return new Array(amount).fill(1).map(() => {
+    return new Array(amount).fill(1).map((_, index) => {
       const size = getRandomSize();
       return (
         <FontAwesomeIcon
+          key={`icon_${index}`}
           className="questionIcon"
           style={{ width: size, height: size }}
           icon={icon}
@@ -153,9 +152,10 @@ const IconsBackground = ({
     <div className="iconBackground">
       {icon && (
         <>
-          {new Array(8).fill(1).map((x, index) => (
+          {new Array(8).fill(1).map((_, index) => (
             <div
               className="iconsRow"
+              key={`row_${index}`}
               style={{ marginLeft: index % 2 === 0 ? "-200px" : "-100px" }}
             >
               {getIconsRow(12)}

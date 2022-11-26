@@ -38,7 +38,7 @@ export type IGameSetupBase = IGameSetupAbstract<IQuestion>;
 export type IGameSetup = IGameSetupAbstract<FullQuestion>;
 export type ITournamentSetup = {
   gamesSetups: IGameSetup[];
-  finalGameSetup?: IGameSetup;
+  finalGameSetup: IGameSetup;
 };
 
 export type Player = {

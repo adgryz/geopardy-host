@@ -7,14 +7,14 @@ import "./tournamentSummary.css";
 import { Player } from "../services/geopardyTypes";
 
 export const TournamentSummary = () => {
-  const { games, currentGameIndex, sendStartGame } = useContext(AppContext);
+  const { games, currentGameIndex, finalGame, isFinal, sendStartGame } =
+    useContext(AppContext);
 
-  const finalGame = { players: [] };
   return (
     <div className="tournamentSummaryContainer">
-      <div>
-        <div>Gry kwalifikacyjne</div>
-        <div>
+      <div className="qualifyContainer">
+        <div className="qualifyHeader">Gry kwalifikacyjne</div>
+        <div className="qualifyGamesContainer">
           {Object.values(games).map((game, index) => (
             <SingleGameOverview players={game.players} index={index + 1} />
           ))}
@@ -25,9 +25,16 @@ export const TournamentSummary = () => {
         <SingleGameOverview players={finalGame.players} isFinalGame />
       </div>
 
-      <Button size="lg" onClick={sendStartGame}>
-        Rozpocznij grę numer {currentGameIndex ? currentGameIndex + 1 : 0}
-      </Button>
+      {isFinal ? (
+        <Button size="lg" onClick={sendStartGame}>
+          Rozpocznij grę finałową
+        </Button>
+      ) : (
+        <Button size="lg" onClick={sendStartGame}>
+          Rozpocznij grę numer{" "}
+          {currentGameIndex !== undefined ? currentGameIndex + 1 : 0}
+        </Button>
+      )}
     </div>
   );
 };
@@ -51,7 +58,7 @@ const SingleGameOverview = ({
       </div>
       {players.map((player) => (
         <div key={player.id}>
-          {player.name}: {player.score}
+          {player.name}: {!isFinalGame && player.score}
         </div>
       ))}
     </div>

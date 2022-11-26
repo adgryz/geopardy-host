@@ -13,15 +13,16 @@ interface IQuestionsListProps {
 
 export const QuestionsList = ({ questions }: IQuestionsListProps) => {
   const navigate = useNavigate();
-  const { startQuestion } = useContext(AppContext);
+  const { setQuestionStarted } = useContext(AppContext);
 
   const openQuestion = (questionId: string, isAnswered?: boolean) => {
     if (isAnswered) {
       return;
     }
-    startQuestion(questionId);
+    setQuestionStarted(questionId);
     navigate(`/question/${questionId}`);
   };
+
   return (
     <div>
       {questions.map((question) => (

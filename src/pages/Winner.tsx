@@ -1,5 +1,6 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { BackButton } from "../geopardy/components/BackButton";
 import { Player } from "../services/geopardyTypes";
 
 import { AppContext } from "../services/SocketProvider";
@@ -7,21 +8,30 @@ import { AppContext } from "../services/SocketProvider";
 import "./winner.css";
 
 export const Winner = () => {
-  const { currentGamePlayers, sendProceedToTheNextGame } =
+  const { currentGamePlayers, sendProceedToTheNextGame, isFinal } =
     useContext(AppContext);
   const navigate = useNavigate();
   const deepCopy: Player[] = JSON.parse(JSON.stringify(currentGamePlayers));
-  const winner = deepCopy.sort((p1, p2) => p1.score - p2.score)[0];
+  const winner = deepCopy.sort((p1, p2) => p2.score - p1.score)[0];
 
   const goBackToTournamentSummary = () => {
-    navigate("/tournament");
-    sendProceedToTheNextGame({ winnerId: winner.id });
+    console.log(winner);
+    if (isFinal) {
+      navigate("/");
+    } else {
+      navigate("/tournament");
+      sendProceedToTheNextGame({ winnerId: winner.id });
+    }
   };
 
   return (
     <div className="winnerContainer">
-      <div>{`Zwycięża ${winner.name} z wynikiem ${winner.score}`}</div>
-      <div onClick={goBackToTournamentSummary}>Powrót</div>
+      {isFinal ? (
+        <div className="winnerHeader">{`Cały turniej zwycięża ${winner.name} z wynikiem ${winner.score}`}</div>
+      ) : (
+        <div className="winnerHeader">{`Zwycięża ${winner.name} z wynikiem ${winner.score}`}</div>
+      )}
+      <BackButton onClick={goBackToTournamentSummary} />
     </div>
   );
 };
