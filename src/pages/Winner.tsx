@@ -15,13 +15,12 @@ export const Winner = () => {
   const winner = deepCopy.sort((p1, p2) => p2.score - p1.score)[0];
 
   const goBackToTournamentSummary = () => {
-    console.log(winner);
     if (isFinal) {
       navigate("/");
     } else {
       navigate("/tournament");
-      sendProceedToTheNextGame({ winnerId: winner.id });
     }
+    sendProceedToTheNextGame({ winnerId: winner.id });
   };
 
   return (

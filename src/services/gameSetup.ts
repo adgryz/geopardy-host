@@ -348,7 +348,8 @@ const getFullGameSetup = (baseSetup: IGameSetupBase): IGameSetup => {
 // };
 
 export const firstGameSetupBase: IGameSetupBase = {
-  finalQuestion: "Wymień 3 noblistów po 2000 roku.",
+  finalQuestionText: "Wymień 3 noblistów po 2000 roku.",
+  finalQuestionCategory: "Nagrody Nobla",
   firstQuestionsGroup: [
     {
       groupName: "Sławne Głosy",
@@ -403,7 +404,8 @@ export const firstGameSetupBase: IGameSetupBase = {
 };
 
 export const secondGameSetupBase: IGameSetupBase = {
-  finalQuestion: "Wymień 3 noblistów po 2000 roku.",
+  finalQuestionText: "Wymień 3 noblistów po 2000 roku.",
+  finalQuestionCategory: "Nagrody Nobla",
   firstQuestionsGroup: [
     {
       groupName: "Sławne Kurki",
@@ -458,7 +460,8 @@ export const secondGameSetupBase: IGameSetupBase = {
 };
 
 export const finalGameSetupBase: IGameSetupBase = {
-  finalQuestion: "Wymień 3 noblistów po 2000 roku.",
+  finalQuestionText: "Wymień 3 noblistów po 2000 roku.",
+  finalQuestionCategory: "Nagrody Nobla",
   firstQuestionsGroup: [
     {
       groupName: "F1",

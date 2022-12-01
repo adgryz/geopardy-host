@@ -28,12 +28,12 @@ export const Question = () => {
   const params = useParams();
 
   const handleBackClick = () => {
-    handleNoAnswer();
     handleQuestionFinished();
+    handleNoAnswer();
   };
   const onGoodAnswer = () => {
-    handleCorrectAnswer();
     handleQuestionFinished();
+    handleCorrectAnswer();
   };
 
   const [isQuestionActive, setIsQuestionActive] = useState(false);

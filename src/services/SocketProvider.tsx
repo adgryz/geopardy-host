@@ -2,7 +2,7 @@ import { useState, ReactNode, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 
-import { Game, IGameSetup, Player } from "./geopardyTypes";
+import { Game, IGameSetup, Player, FinalQuestionInfo } from "./geopardyTypes";
 import { firstGameSetup, tournamentSetup } from "./gameSetup";
 import { getUseSocket } from "./useSocket";
 
@@ -27,6 +27,10 @@ const SEND_START_GAME = "sendStartGame";
 const SEND_PROCEED_TO_THE_NEXT_GAME = "sendProceedToTheNextGame";
 const RETURN_START_GAME = "returnStartGame";
 
+//finalGame
+const RETURN_UPDATED_FINAL_GAME = "returnUpdatedFinalGame";
+const RETURN_NEXT_GAME_IS_FINAL = "returnNextGameIsFinal";
+
 //questions
 const SEND_START_QUESTION = "sendStartQuestion";
 const SEND_NEW_PLAYER_SCORE = "sendNewPlayerScore";
@@ -35,9 +39,14 @@ const SEND_NO_ANSWER = "sendNoAnswer";
 const RETURN_ANSWER_QUESTION = "returnAnswerQuestion";
 const RETURN_ANSWER_QUESTION_END = "returnAnswerQuestionEnd";
 
-//final_game
-const RETURN_UPDATED_FINAL_GAME = "returnUpdatedFinalGame";
-const RETURN_NEXT_GAME_IS_FINAL = "returnNextGameIsFinal";
+//finalQuestion
+const SEND_START_FINAL_QUESTION = "sendStartFinalQuestion";
+const RETURN_ALL_BETS_SENT = "returnAllBetsSent";
+const SEND_SHOW_FINAL_QUESTION = "sendShowFinalQuestion";
+const SEND_FINAL_QUESTION_TIME_OUT = "sendFinalQuestionTimeOut";
+const RETURN_FINAL_QUESTION_ANSWERS = "returnFinalQuestionAnswers";
+const SEND_CORRECT_FINAL_ANSWER = "sendCorrectFinalAnswer";
+const SEND_INCORRECT_FINAL_ANSWER = "sendIncorrectFinalAnswer";
 
 interface ISocketProviderProps {
   children: ReactNode;
@@ -62,13 +71,21 @@ interface AppData {
   currentGamePlayers: Player[];
   gameId?: string;
   currentGameIndex?: number;
+  finishGame: () => void;
 
   finalGame: Game;
   isFinal: boolean;
 
+  sendShowFinalQuestion: () => void;
+  sendFinalQuestionTimeOut: () => void;
+  sendCorrectFinalAnswer: (playerId: string) => void;
+  sendIncorrectFinalAnswer: (playerId: string) => void;
+  changePlayersScore: (playerId: string, difference: number) => void;
+
   roundNumber: 1 | 2;
   currentQuestionPoints: number;
   answeringPlayerName?: string;
+  allBetsSent: boolean;
   setQuestionStarted: (questionId: string) => void;
   handleQuestionFinished: () => void;
   handleCorrectAnswer: () => void;
@@ -88,6 +105,7 @@ export const AppContext = createContext<AppData>({
 
   sendStartGame: () => {},
   sendProceedToTheNextGame: () => {},
+  finishGame: () => {},
 
   sendStartQuestion: () => {},
 
@@ -96,9 +114,21 @@ export const AppContext = createContext<AppData>({
   roundNumber: 1,
   currentQuestionPoints: 0,
 
-  finalGame: { isStarted: false, players: [], gameId: "" },
+  finalGame: {
+    isStarted: false,
+    players: [],
+    gameId: "",
+    finalQuestionInfos: {},
+  },
   isFinal: false,
 
+  sendShowFinalQuestion: () => {},
+  sendFinalQuestionTimeOut: () => {},
+  sendCorrectFinalAnswer: () => {},
+  sendIncorrectFinalAnswer: () => {},
+  changePlayersScore: () => {},
+
+  allBetsSent: false,
   setQuestionStarted: () => {},
   handleQuestionFinished: () => {},
   handleCorrectAnswer: () => {},
@@ -122,7 +152,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   const [tournamentId, setTournamentId] = useState<string | undefined>();
 
   const [game, setGame] = useState<IGameSetup>(firstGameSetup);
-
+  const [secondRoundFinished, setSecondRoundFinished] = useState(false);
   const [gameFinished, setGameFinished] = useState(false);
   const [roundNumber, setRoundNumber] = useState<1 | 2>(1);
   const [currentQuestionPoints, setCurrentQuestionPoints] = useState<number>(0);
@@ -133,8 +163,10 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     gameId: "finalGame",
     players: [],
     isStarted: false,
+    finalQuestionInfos: {},
   });
   const [isFinal, setIsFinal] = useState(false);
+  const [allBetsSent, setAllBetsSent] = useState(false);
 
   const [answeringPlayerId, setAnsweringPlayerId] =
     useState<string | undefined>();
@@ -159,10 +191,16 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     }
     setGame(tournamentSetup.gamesSetups[currentGameIndex]);
     setCurrentGamePlayers(Object.values(games)[currentGameIndex].players);
-  }, [currentGameIndex, games, isFinal]);
+  }, [currentGameIndex, isFinal]);
 
   useEffect(() => {
-    console.log("gameFinished effect", gameFinished);
+    if (secondRoundFinished) {
+      sendStartFinalQuestion();
+      navigate("/finalQuestion");
+    }
+  }, [secondRoundFinished]);
+
+  useEffect(() => {
     if (gameFinished) {
       navigate("/winner");
     }
@@ -172,16 +210,16 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
 
   const handleQuestionFinished = () => {
     if (roundNumber === 1) {
-      checkIfSecondRound(game);
+      checkIfFirstRoundFinished(game);
     }
+    console.log(roundNumber, "handleQuestionFinished");
+    console.log(game, "game");
     if (roundNumber === 2) {
-      console.log("CHECK IF GAME ENDED", game);
-      checkIfGameEnded(game);
+      checkIfSecondRoundFinished(game);
     }
 
     navigate("/game");
   };
-
   const setQuestionStarted = (questionId: string) => {
     const newGame: IGameSetup = JSON.parse(JSON.stringify(game));
 
@@ -201,7 +239,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     setGame(newGame);
     return newGame;
   };
-  const checkIfSecondRound = (game: IGameSetup) => {
+  const checkIfFirstRoundFinished = (game: IGameSetup) => {
     const allFirstGroupQuestionsAnswered = game.firstQuestionsGroup
       .flatMap((questionsGroup) => questionsGroup.questions)
       .every((question) => question.isAnswered);
@@ -209,18 +247,24 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
       setRoundNumber(2);
     }
   };
-
-  const checkIfGameEnded = (game: IGameSetup) => {
+  const checkIfSecondRoundFinished = (game: IGameSetup) => {
     const allSecondGroupQuestionsAnswered = game.secondQuestionsGroup
       .flatMap((questionsGroup) => questionsGroup.questions)
       .every((question) => question.isAnswered);
-    console.log(allSecondGroupQuestionsAnswered);
-    console.log("all answered", allSecondGroupQuestionsAnswered);
     if (allSecondGroupQuestionsAnswered) {
-      setGameFinished(true);
+      console.log("setSecondRoundFinished");
+      setSecondRoundFinished(true);
     }
   };
-
+  const changePlayersScore = (playerId: string, difference: number) => {
+    setCurrentGamePlayers(
+      currentGamePlayers.map((player) =>
+        player.id === playerId
+          ? { ...player, score: player.score + difference }
+          : player
+      )
+    );
+  };
   const handleCorrectAnswer = () => {
     if (!answeringPlayerId) return;
     const answeringPlayer = currentGamePlayers.find(
@@ -228,20 +272,13 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     );
     if (!answeringPlayer) return;
 
-    const newPlayerScore = answeringPlayer.score + currentQuestionPoints;
-
-    setCurrentGamePlayers(
-      currentGamePlayers.map((player) =>
-        player.id === answeringPlayerId
-          ? { ...player, score: newPlayerScore }
-          : player
-      )
-    );
-
-    sendNewPlayerScore({ answeringPlayerId, newScore: newPlayerScore });
+    changePlayersScore(answeringPlayerId, currentQuestionPoints);
+    sendNewPlayerScore({
+      answeringPlayerId,
+      newScore: answeringPlayer.score + currentQuestionPoints,
+    });
     setAnsweringPlayerId(undefined);
   };
-
   const handleWrongAnswer = () => {
     if (!answeringPlayerId) return;
     const answeringPlayer = currentGamePlayers.find(
@@ -249,24 +286,18 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     );
     if (!answeringPlayer) return;
 
-    const newPlayerScore = answeringPlayer.score - currentQuestionPoints;
-
-    setCurrentGamePlayers(
-      currentGamePlayers.map((player) =>
-        player.id === answeringPlayerId
-          ? { ...player, score: newPlayerScore }
-          : player
-      )
-    );
-
-    sendNewPlayerScore({ answeringPlayerId, newScore: newPlayerScore });
+    changePlayersScore(answeringPlayerId, -currentQuestionPoints);
+    sendNewPlayerScore({
+      answeringPlayerId,
+      newScore: answeringPlayer.score - currentQuestionPoints,
+    });
     sendPlayerAnsweredWrongly({ playerId: answeringPlayerId });
     setAnsweringPlayerId(undefined);
   };
-
   const handleNoAnswer = () => {
     sendNoAnswer();
   };
+  const finishGame = () => setGameFinished(true);
 
   // Utils Setup
   useSocket(CONNECT, () => {
@@ -328,12 +359,13 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
       setGameId(currentGameId);
       setCurrentGameIndex(currentGameIndex);
       setRoundNumber(1);
+      setSecondRoundFinished(false);
       setGameFinished(false);
+      setAllBetsSent(false);
     }
   );
   // RETURN_START_GAME
   useSocket(RETURN_START_GAME, () => navigate("/game"));
-
   const sendStartGame = () => {
     socket.emit(SEND_START_GAME, { tournamentId, gameId });
   };
@@ -394,16 +426,56 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     socket.emit(SEND_NO_ANSWER, { gameId, tournamentId });
   };
 
+  // Final Question
+  const sendStartFinalQuestion = () => {
+    socket.emit(SEND_START_FINAL_QUESTION, { gameId, tournamentId });
+  };
+  useSocket(RETURN_ALL_BETS_SENT, () => {
+    setAllBetsSent(true);
+  });
+  const sendShowFinalQuestion = () => {
+    socket.emit(SEND_SHOW_FINAL_QUESTION, { gameId, tournamentId });
+  };
+  const sendFinalQuestionTimeOut = () => {
+    socket.emit(SEND_FINAL_QUESTION_TIME_OUT, { gameId, tournamentId });
+  };
+  useSocket(
+    RETURN_FINAL_QUESTION_ANSWERS,
+    ({
+      finalQuestionInfos,
+    }: {
+      finalQuestionInfos: Record<string, FinalQuestionInfo>;
+    }) => {
+      if (!gameId) {
+        return;
+      }
+      const gamesCopy: Record<string, Game> = JSON.parse(JSON.stringify(games));
+      gamesCopy[gameId].finalQuestionInfos = finalQuestionInfos;
+      setGames(gamesCopy);
+    }
+  );
+  const sendCorrectFinalAnswer = (playerId: string) => {
+    socket.emit(SEND_CORRECT_FINAL_ANSWER, { gameId, tournamentId, playerId });
+  };
+  const sendIncorrectFinalAnswer = (playerId: string) => {
+    socket.emit(SEND_INCORRECT_FINAL_ANSWER, {
+      gameId,
+      tournamentId,
+      playerId,
+    });
+  };
+
   // Final Game
   useSocket(RETURN_UPDATED_FINAL_GAME, ({ finalGame }: { finalGame: Game }) => {
     setFinalGame(finalGame);
   });
-
   useSocket(RETURN_NEXT_GAME_IS_FINAL, () => {
     setGame(tournamentSetup.finalGameSetup);
     setIsFinal(true);
     setGameFinished(false);
+    setSecondRoundFinished(false);
     setRoundNumber(1);
+    setAllBetsSent(false);
     setCurrentGamePlayers(finalGame.players);
   });
 
@@ -425,9 +497,17 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         currentGamePlayers,
         gameId,
         currentGameIndex,
+        finishGame,
+
+        sendShowFinalQuestion,
+        sendFinalQuestionTimeOut,
+        sendCorrectFinalAnswer,
+        sendIncorrectFinalAnswer,
+        changePlayersScore,
 
         finalGame,
         isFinal,
+        allBetsSent,
 
         roundNumber,
         sendStartQuestion,
@@ -445,10 +525,6 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     </AppContext.Provider>
   );
 };
-
-// BUGI
-// Zły gracz w playersach
-// Brak przejscia do drugiej rundki
 
 // LESSONS LEARNED
 // 1. Pracuj na bieąco nad architekturą

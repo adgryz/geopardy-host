@@ -8,6 +8,7 @@ import { CreateTournament } from "./pages/CreateTournament";
 import { Lobby } from "./pages/Lobby";
 import { Geopardy } from "./geopardy/Geopardy";
 import { Question } from "./geopardy/Question";
+import { FinalQuestion } from "./geopardy/FinalQuestion";
 import { TournamentSummary } from "./pages/TournamentSummary";
 import { Winner } from "./pages/Winner";
 
@@ -22,6 +23,7 @@ function App() {
             <Route path="/tournament" element={<TournamentSummary />} />
             <Route path="/game" element={<Geopardy />} />
             <Route path="/question/:id" element={<Question />} />
+            <Route path="/finalQuestion" element={<FinalQuestion />} />
             <Route path="/winner" element={<Winner />} />
           </Routes>
         </ChakraProvider>

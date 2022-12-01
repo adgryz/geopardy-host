@@ -31,7 +31,8 @@ export type IGameRound<Q> = IQuestionsGroup<Q>[];
 interface IGameSetupAbstract<Q> {
   firstQuestionsGroup: IGameRound<Q>;
   secondQuestionsGroup: IGameRound<Q>;
-  finalQuestion: string;
+  finalQuestionText: string;
+  finalQuestionCategory: string;
 }
 
 export type IGameSetupBase = IGameSetupAbstract<IQuestion>;
@@ -49,8 +50,16 @@ export type Player = {
   wasAlreadyAnswering?: boolean;
 };
 
+export type FinalQuestionInfo = {
+  answer: string;
+  betAmount: number;
+  playerId: string;
+};
+
 export type Game = {
   gameId: string;
   isStarted: boolean;
   players: Player[];
+  finalQuestionInfos: Record<string, FinalQuestionInfo>;
+  isFinalQuestionStarted?: boolean;
 };

@@ -1,0 +1,70 @@
+.finalQuestionContainer {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    background-color: #357ecf;
+}
+
+.finalQuestionCategoryHeader {
+    font-size: 32px;
+}
+
+.finalQuestionCategory {
+    font-size: 80px;
+    font-weight: bold;
+}
+
+.finalQuestionText {
+    font-weight: bold;
+    font-size: 80px;
+}
+
+.finalQuestionTimeLeft {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.finalQuestionPlayButton {
+    font-size: 72px;
+    cursor: pointer;
+    padding: 5px;
+    margin: 30px;
+    color: white;
+}
+
+.finalQuestionPlayersContainer {
+    display: flex;
+}
+
+.finalQuestionShowAnswerButton {
+    font-weight: bold;
+    padding: 5px;
+    color: purple;
+    font-weight: bolder;
+    font-size: 24px;
+    background-color: white;
+    cursor: pointer;
+    border: 5px solid purple;
+    border-radius: 15px;
+}
+
+.finalQuestionCorrectnessButtonsContainer {
+    display: flex;
+    justify-content: space-around;
+}
+.finalQuestionCorrectButton {
+    font-size: 72px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.finalQuestionIncorrectButton{
+    font-size: 72px;
+    cursor: pointer;
+    padding: 5px;
+}

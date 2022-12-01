@@ -16,7 +16,11 @@ export const TournamentSummary = () => {
         <div className="qualifyHeader">Gry kwalifikacyjne</div>
         <div className="qualifyGamesContainer">
           {Object.values(games).map((game, index) => (
-            <SingleGameOverview players={game.players} index={index + 1} />
+            <SingleGameOverview
+              key={game.gameId}
+              players={game.players}
+              index={index + 1}
+            />
           ))}
         </div>
       </div>
