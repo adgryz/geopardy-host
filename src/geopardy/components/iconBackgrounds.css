@@ -1,0 +1,16 @@
+.questionIcon {
+    margin-left: 70px;
+    margin-top: 40px;
+}
+
+.iconBackground {
+    position: fixed;
+    z-index: 2;
+    opacity: 0.07;
+}
+
+.iconsRow {
+    margin-top: -100px;
+    margin-bottom: 50px;
+    width: 900000px;
+}  

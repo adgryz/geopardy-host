@@ -12,7 +12,7 @@ export const CreateTournament = () => {
     <div className="createTournamentContainer">
       {!isConnected && <span className="loader" />}
 
-      <Button colorScheme="teal" size="lg" onClick={sendCreateTournament}>
+      <Button colorScheme="primary" size="lg" onClick={sendCreateTournament}>
         Stwórz Turniej
       </Button>
     </div>

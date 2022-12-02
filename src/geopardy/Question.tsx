@@ -5,13 +5,13 @@ import {
   faSquareCheck,
   faSquareXmark,
   faCirclePlay,
-  IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import ReactAudioPlayer from "react-audio-player";
 
 import { AppContext } from "../services/SocketProvider";
-import "./question.css";
 import { BackButton } from "./components/BackButton";
+import { IconsBackground } from "./components/IconBackgrounds";
+import "./question.css";
 
 export const Question = () => {
   const {
@@ -124,45 +124,6 @@ export const Question = () => {
         )}
         <BackButton onClick={handleBackClick} />
       </div>
-    </div>
-  );
-};
-
-const IconsBackground = ({
-  icon = faCirclePlay,
-}: {
-  icon?: IconDefinition;
-}) => {
-  const getRandomSize = () => `${150 + Math.floor(Math.random() * 50)}px`;
-  const getIconsRow = (amount: number) => {
-    return new Array(amount).fill(1).map((_, index) => {
-      const size = getRandomSize();
-      return (
-        <FontAwesomeIcon
-          key={`icon_${index}`}
-          className="questionIcon"
-          style={{ width: size, height: size }}
-          icon={icon}
-        />
-      );
-    });
-  };
-
-  return (
-    <div className="iconBackground">
-      {icon && (
-        <>
-          {new Array(8).fill(1).map((_, index) => (
-            <div
-              className="iconsRow"
-              key={`row_${index}`}
-              style={{ marginLeft: index % 2 === 0 ? "-200px" : "-100px" }}
-            >
-              {getIconsRow(12)}
-            </div>
-          ))}
-        </>
-      )}
     </div>
   );
 };

@@ -6,8 +6,18 @@
 
     width: 100vw;
     height: 100vh;
-
+    background-color: #9e6ec3;
+    color:  #eff9ff;
     font-size: 24px;
+}
+
+.lobbyContentContainer {
+    position: fixed;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .tournamentIdInfo {
@@ -18,11 +28,13 @@
 
 .tournamentId {
     font-weight: 900;
-    color: navy;
+    color: #9e6ec3;;
 }
 
 .waitingForPlayers {
     margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 40px;
 }
 
 .lobbyLabel {
@@ -30,13 +42,22 @@
 }
 
 .playersList {
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items:  flex-start;
+    max-height: 240px;
+    width: 100%;
 }
 
 .lobbyPlayerContainer {
     margin-bottom: 5px;
     display: flex;
-    align-items: center;
+    margin-right: 40px;
+    margin-bottom: 20px;
+    align-items: flex-start;
 }
 
 .lobbyPlayerAvatar {

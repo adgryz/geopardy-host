@@ -6,10 +6,17 @@
 
     width: 100vw;
     height: 100vh;
+    background-color: #459e4b;
+    color: #eff9ff;
 }
 
 .winnerHeader {
     font-size: 48px;
     font-weight: bold;
     margin-bottom: 40px;
+}
+
+.winnerCurrency {
+    font-size: 48px;
+    margin-left: 10px;
 }

@@ -11,12 +11,13 @@ import { Question } from "./geopardy/Question";
 import { FinalQuestion } from "./geopardy/FinalQuestion";
 import { TournamentSummary } from "./pages/TournamentSummary";
 import { Winner } from "./pages/Winner";
+import theme from "./theme";
 
 function App() {
   return (
     <BrowserRouter>
       <SocketProvider>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
           <Routes>
             <Route path="/" element={<CreateTournament />} />
             <Route path="/lobby" element={<Lobby />} />

@@ -1,3 +1,5 @@
+import { faGift } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { BackButton } from "../geopardy/components/BackButton";
@@ -28,7 +30,10 @@ export const Winner = () => {
       {isFinal ? (
         <div className="winnerHeader">{`Cały turniej zwycięża ${winner.name} z wynikiem ${winner.score}`}</div>
       ) : (
-        <div className="winnerHeader">{`Zwycięża ${winner.name} z wynikiem ${winner.score}`}</div>
+        <div className="winnerHeader">
+          {`Zwycięża ${winner.name} z wynikiem ${winner.score}`}{" "}
+          <FontAwesomeIcon className="winnerCurrency" icon={faGift} />
+        </div>
       )}
       <BackButton onClick={goBackToTournamentSummary} />
     </div>

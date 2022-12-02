@@ -6,8 +6,12 @@ import { Game, IGameSetup, Player, FinalQuestionInfo } from "./geopardyTypes";
 import { firstGameSetup, tournamentSetup } from "./gameSetup";
 import { getUseSocket } from "./useSocket";
 
-// const socket = io("https://geopargygame.herokuapp.com/");
-const socket = io("http://localhost:3123");
+const isDev = process.env.NODE_ENV === "development";
+const serverAddress = isDev
+  ? "http://localhost:3123"
+  : "https://geopargygame.herokuapp.com/";
+const socket = io(serverAddress);
+
 const useSocket = getUseSocket(socket);
 
 const CONNECT = "connect";
@@ -183,15 +187,13 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   }, [answeringPlayerId, currentGamePlayers]);
 
   useEffect(() => {
-    if (isFinal) {
-      return;
-    }
     if (!currentGameIndex && currentGameIndex !== 0) {
       return;
     }
     setGame(tournamentSetup.gamesSetups[currentGameIndex]);
     setCurrentGamePlayers(Object.values(games)[currentGameIndex].players);
-  }, [currentGameIndex, isFinal]);
+    console.log("currentGameIndex", currentGameIndex, "setCurrentGamePlayers");
+  }, [currentGameIndex]);
 
   useEffect(() => {
     if (secondRoundFinished) {
@@ -469,7 +471,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   useSocket(RETURN_UPDATED_FINAL_GAME, ({ finalGame }: { finalGame: Game }) => {
     setFinalGame(finalGame);
   });
-  useSocket(RETURN_NEXT_GAME_IS_FINAL, () => {
+  useSocket(RETURN_NEXT_GAME_IS_FINAL, ({ finalGame }: { finalGame: Game }) => {
     setGame(tournamentSetup.finalGameSetup);
     setIsFinal(true);
     setGameFinished(false);
@@ -477,6 +479,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     setRoundNumber(1);
     setAllBetsSent(false);
     setCurrentGamePlayers(finalGame.players);
+    console.log("setCurrentGamePlayers", finalGame.players);
   });
 
   return (

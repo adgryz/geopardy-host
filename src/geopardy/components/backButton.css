@@ -1,13 +1,13 @@
 .backButton {
-    padding: 20px;
-    font-size: 24px;
+    padding: 10px;
+    font-size: 20px;
     font-weight: 900;
-    color: #ededed;
-    background: #5358c8;
+    color: #eff9ff;
+    background: #9e6ec3;
     cursor: pointer;
     margin-bottom: 30px;
 
-    border: 2px solid #ededed;
+    border: 2px solid #eff9ff;
     border-radius: 10px;
 
     display: flex;
@@ -18,5 +18,5 @@
 }
 
 .backButton:hover {
-    background: #3e4293;
+    background: #603d7b;
 }
