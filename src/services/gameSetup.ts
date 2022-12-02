@@ -459,6 +459,62 @@ export const secondGameSetupBase: IGameSetupBase = {
   ],
 };
 
+export const thirdGameSetupBase: IGameSetupBase = {
+  finalQuestionText: "Wymień 3 rabusiów",
+  finalQuestionCategory: "Złodziejstwo",
+  firstQuestionsGroup: [
+    {
+      groupName: "Sławne Kurki",
+      icon: faMicrophone,
+      questionsGroupType: "sound",
+      questions: [
+        {
+          text: "Kto to spiewa?",
+          id: "11",
+          soundUrl: "https://www.computerhope.com/jargon/m/example.mp3",
+        }, // 15
+        {
+          text: "Co się dzieje gdy zawodnik dostanie czerwoną kartkę?",
+          id: "12",
+        }, // Przeciwnicy dostają punkt
+      ],
+    },
+    {
+      groupName: "Ziomale",
+      icon: faSpa,
+      questionsGroupType: "text",
+      questions: [
+        {
+          text: "Jak nazywa się kwiat, którego nazwa jest jak nazwa broni?",
+          id: "21",
+        }, // Mieczyk
+        { text: "Jaki kwiat jest symbolem Maryii?", id: "22" }, // Lilia
+      ],
+    },
+  ],
+  secondQuestionsGroup: [
+    {
+      groupName: "Fizyka",
+      questionsGroupType: "text",
+      questions: [
+        { text: "Ile to 6 * 8 ?", id: "61" }, // 48
+        { text: "Ile to 2 + 2 * 2 ?", id: "62" }, // 6
+      ],
+    },
+    {
+      groupName: "Duży Papieros",
+      questionsGroupType: "text",
+      questions: [
+        {
+          text: "Jaki aktor przebiera się za mikołaja w serii Listy do M.?",
+          id: "71",
+        }, // Karolak
+        { text: "Ile części ma Shrek?", id: "72" }, // 4
+      ],
+    },
+  ],
+};
+
 export const finalGameSetupBase: IGameSetupBase = {
   finalQuestionText: "Wymień 3 noblistów po 2000 roku.",
   finalQuestionCategory: "Nagrody Nobla",
@@ -517,9 +573,10 @@ export const finalGameSetupBase: IGameSetupBase = {
 
 export const firstGameSetup = getFullGameSetup(firstGameSetupBase);
 export const secondGameSetup = getFullGameSetup(secondGameSetupBase);
+export const thirdGameSetup = getFullGameSetup(thirdGameSetupBase);
 export const finalGameSetup = getFullGameSetup(finalGameSetupBase);
 
 export const tournamentSetup: ITournamentSetup = {
-  gamesSetups: [firstGameSetup, secondGameSetup],
+  gamesSetups: [firstGameSetup, secondGameSetup, thirdGameSetup],
   finalGameSetup: finalGameSetup,
 };

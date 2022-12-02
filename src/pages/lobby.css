@@ -33,7 +33,20 @@
     margin-bottom: 10px;
 }
 
-.player {
+.lobbyPlayerContainer {
     margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.lobbyPlayerAvatar {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.lobbyPlayerName {
     font-weight: bold;
 }

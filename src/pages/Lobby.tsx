@@ -29,8 +29,13 @@ export const Lobby = () => {
       <div className="lobbyLabel">Gracze w lobby:</div>
       <div className="playersList">
         {playersArray.map(([id, player]) => (
-          <div className="player" key={id}>
-            {player.name}
+          <div className="lobbyPlayerContainer" key={id}>
+            <img
+              className="lobbyPlayerAvatar"
+              src={player.base64Photo}
+              alt="avatar"
+            />
+            <div className="lobbyPlayerName">{player.name}</div>
           </div>
         ))}
       </div>
