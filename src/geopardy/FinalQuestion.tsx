@@ -11,7 +11,7 @@ import { AppContext } from "../services/SocketProvider";
 import { IconsBackground } from "./components/IconBackgrounds";
 import "./finalQuestion.css";
 
-const FINAL_QUESTION_TIMEOUT = 3;
+const FINAL_QUESTION_TIMEOUT = 45;
 
 export const FinalQuestion = () => {
   const {

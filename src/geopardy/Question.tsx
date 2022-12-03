@@ -91,16 +91,16 @@ export const Question = () => {
           />
         )}
         {currentQuestion?.soundUrl && (
-          <ReactAudioPlayer
-            className="questionSound"
+          <iframe
+            width="400"
+            height="200"
+            title="soundQuestion"
             src={currentQuestion.soundUrl}
-            onEnded={onPlayQuestion}
-            controls
           />
         )}
       </div>
       <div className="bottomPanel">
-        {!isQuestionActive && !currentQuestion?.soundUrl && (
+        {!isQuestionActive && (
           <div onClick={onPlayQuestion} className="playQuestionButton">
             <FontAwesomeIcon icon={faCirclePlay} />
           </div>
