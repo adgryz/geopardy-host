@@ -71,8 +71,8 @@ const getFullGameSetup = (baseSetup: IGameSetupBase): IGameSetup => {
 // PROD GAMES
 
 export const firstGameSetupBase: IGameSetupBase = {
-  finalQuestionText: "Zegar",
-  finalQuestionCategory:
+  finalQuestionCategory: "Zegar",
+  finalQuestionText:
     "Ile razy w ciągu doby pokryją się wskazówki godzinowa i minutowa?",
   firstQuestionsGroup: [
     {
@@ -381,8 +381,8 @@ export const firstGameSetupBase: IGameSetupBase = {
 };
 
 export const secondGameSetupBase: IGameSetupBase = {
-  finalQuestionText: "Stolica",
-  finalQuestionCategory:
+  finalQuestionCategory: "Stolica",
+  finalQuestionText:
     "Jakie miasto jest najdalej na południe wysuniętą stolicą państwa w Unii Europejskiej?",
   firstQuestionsGroup: [
     {
@@ -690,8 +690,8 @@ export const secondGameSetupBase: IGameSetupBase = {
 };
 
 export const thirdGameSetupBase: IGameSetupBase = {
-  finalQuestionText: "Góry",
-  finalQuestionCategory:
+  finalQuestionCategory: "Góry",
+  finalQuestionText:
     "Jak nazywa się ośmiotysięcznik, którego nazwa wywodzi się z sanskrytu i znaczy 'Naga Góra'?",
   firstQuestionsGroup: [
     {
@@ -794,7 +794,7 @@ export const thirdGameSetupBase: IGameSetupBase = {
           text: "Jak nazywa się ten zespół?",
           id: "41",
           soundUrl:
-            "https://drive.google.com/file/d/1dBVAIhbz1TKQEtJAQ-aMqfk2IPZyI502/100",
+            "https://drive.google.com/file/d/1dBVAIhbz1TKQEtJAQ-aMqfk2IPZyI502/preview",
         },
         {
           text: "Jak nazywa się ten zespół?",
@@ -1145,10 +1145,6 @@ export const finalGameSetupBase: IGameSetupBase = {
         },
         {
           text: "Czym jest kusztyk/kulawka?",
-          id: "54",
-        },
-        {
-          text: "Jak nazwiemy wzmacniane wino z winogron zbieranych w dole reki Douro?",
           id: "55",
         },
       ],
