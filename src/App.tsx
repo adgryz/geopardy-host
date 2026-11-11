@@ -13,6 +13,7 @@ import { TournamentSummary } from "./pages/TournamentSummary";
 import { Winner } from "./pages/Winner";
 import { useWakeLock } from "./services/useWakeLock";
 import { SoundToggle } from "./services/SoundToggle";
+import { ResetButton } from "./services/ResetButton";
 import theme from "./theme";
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path="/winner" element={<Winner />} />
           </Routes>
           <SoundToggle />
+          <ResetButton />
         </ChakraProvider>
       </SocketProvider>
     </BrowserRouter>

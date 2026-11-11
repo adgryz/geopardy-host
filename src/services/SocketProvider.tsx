@@ -64,6 +64,7 @@ const RETURN_NEW_PLAYERS = "returnNewPlayers";
 const RETURN_CONNECTED_PLAYERS = "returnConnectedPlayers";
 const SEND_START_TOURNAMENT = "sendStartTournament";
 const SEND_REMOVE_PLAYER = "sendRemovePlayer";
+const SEND_RESET_TOURNAMENT = "sendResetTournament";
 const SEND_SET_GAME_SIZES = "sendSetGameSizes";
 const RETURN_GAME_SIZES = "returnGameSizes";
 const RETURN_START_TOURNAMENT = "returnStartTournament";
@@ -150,6 +151,8 @@ interface AppData {
   // tournament that is still running on the server (can be resumed)
   activeTournamentId: string | null;
   resumeTournament: () => void;
+  // wipes everything on the server – clean start for host and players
+  resetTournament: () => void;
   playersCountToStartTheTournament?: number;
   // number of players in each qualifying game, e.g. [5, 5, 6]
   gameSizes: number[];
@@ -205,6 +208,7 @@ export const AppContext = createContext<AppData>({
 
   activeTournamentId: null,
   resumeTournament: () => {},
+  resetTournament: () => {},
   sendCreateTournament: () => {},
   sendStartTournament: () => {},
   removePlayer: () => {},
@@ -556,9 +560,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
       }
       // The tournament does not exist anymore (finished / server restarted)
       saveHostTournamentId(null);
-      if (tournamentId) {
-        resetTournamentState();
-      }
+      resetTournamentState();
       if (window.location.pathname !== "/") {
         navigate("/", { replace: true });
       }
@@ -585,6 +587,16 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   const resumeTournament = () => {
     if (!activeTournamentId) return;
     socket.emit(RECONNECT_HOST, { tournamentId: activeTournamentId });
+  };
+  const resetTournament = () => {
+    if (
+      !window.confirm(
+        "Zresetować cały turniej do zera? Wszyscy gracze, gry i wyniki zostaną usunięte. Tej operacji nie da się cofnąć."
+      )
+    ) {
+      return;
+    }
+    socket.emit(SEND_RESET_TOURNAMENT);
   };
   // RETURN_NEW_TOURNAMENT
   useSocket(
@@ -810,6 +822,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         sendStartTournament,
         activeTournamentId,
         resumeTournament,
+        resetTournament,
         removePlayer,
         tournamentId,
         players,
