@@ -11,9 +11,13 @@ import { Question } from "./geopardy/Question";
 import { FinalQuestion } from "./geopardy/FinalQuestion";
 import { TournamentSummary } from "./pages/TournamentSummary";
 import { Winner } from "./pages/Winner";
+import { useWakeLock } from "./services/useWakeLock";
+import { SoundToggle } from "./services/SoundToggle";
 import theme from "./theme";
 
 function App() {
+  useWakeLock();
+
   return (
     <BrowserRouter>
       <SocketProvider>
@@ -27,6 +31,7 @@ function App() {
             <Route path="/finalQuestion" element={<FinalQuestion />} />
             <Route path="/winner" element={<Winner />} />
           </Routes>
+          <SoundToggle />
         </ChakraProvider>
       </SocketProvider>
     </BrowserRouter>

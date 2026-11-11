@@ -1,22 +1,38 @@
-import { useContext } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Button } from "@chakra-ui/react";
 
 import { AppContext } from "../services/SocketProvider";
 import { Scenery } from "../festive/Scenery";
 import { Avatar } from "../festive/Decor";
+import { playSound } from "../services/sound";
 
 import "./lobby.css";
+
+// Te same limity co na serwerze
+const MIN_GAME_SIZE = 1;
+const MAX_GAME_SIZE = 12;
 
 export const Lobby = () => {
   const {
     // tournamentId,
     players,
     playersCountToStartTheTournament,
+    gameSizes,
+    setGameSizes,
     sendStartTournament,
     connectedPlayerIds,
     removePlayer,
   } = useContext(AppContext);
   const playersArray = players.map((player) => [player.id, player] as const);
+
+  // A sound for every player that joins
+  const previousPlayersCount = useRef(players.length);
+  useEffect(() => {
+    if (players.length > previousPlayersCount.current) {
+      playSound("join");
+    }
+    previousPlayersCount.current = players.length;
+  }, [players.length]);
   const handleRemovePlayer = (playerId: string, playerName: string) => {
     if (window.confirm(`Usunąć gracza ${playerName} z lobby?`)) {
       removePlayer(playerId);
@@ -25,6 +41,16 @@ export const Lobby = () => {
   const isStartGameDisabled =
     !playersArray.length ||
     playersArray.length !== playersCountToStartTheTournament;
+  // Zmniejszać można tylko do liczby graczy, którzy już dołączyli
+  const canDecrease =
+    (playersCountToStartTheTournament || 0) > playersArray.length;
+  const changeGameSize = (gameIndex: number, difference: number) => {
+    setGameSizes(
+      gameSizes.map((gameSize, index) =>
+        index === gameIndex ? gameSize + difference : gameSize
+      )
+    );
+  };
   const emptySlots = Math.max(
     0,
     (playersCountToStartTheTournament || 0) - playersArray.length
@@ -46,6 +72,39 @@ export const Lobby = () => {
             /{playersCountToStartTheTournament}
           </span>
         </div>
+        {gameSizes.length > 0 && (
+          <div className="gameSizes">
+            <div className="gameSizesLabel">Liczba graczy w grach</div>
+            <div className="gameSizesList">
+              {gameSizes.map((gameSize, index) => (
+                <div className="gameSize panel" key={index}>
+                  <div className="gameSizeName">Gra {index + 1}</div>
+                  <div className="gameSizeStepper">
+                    <button
+                      type="button"
+                      className="gameSizeButton"
+                      aria-label={`Mniej graczy w grze ${index + 1}`}
+                      disabled={gameSize <= MIN_GAME_SIZE || !canDecrease}
+                      onClick={() => changeGameSize(index, -1)}
+                    >
+                      −
+                    </button>
+                    <span className="gameSizeValue display">{gameSize}</span>
+                    <button
+                      type="button"
+                      className="gameSizeButton"
+                      aria-label={`Więcej graczy w grze ${index + 1}`}
+                      disabled={gameSize >= MAX_GAME_SIZE}
+                      onClick={() => changeGameSize(index, 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="playersList">
           {playersArray.map(([id, player]) => (
             <div

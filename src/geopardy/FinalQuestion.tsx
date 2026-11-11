@@ -7,11 +7,12 @@ import {
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AppContext } from "../services/SocketProvider";
 import { Scenery } from "../festive/Scenery";
 import { Avatar, Sparkle } from "../festive/Decor";
 import { IconsBackground } from "./components/IconBackgrounds";
+import { playSound, useMusic } from "../services/sound";
 import "./finalQuestion.css";
 
 const FINAL_QUESTION_TIMEOUT = 45;
@@ -54,9 +55,15 @@ export const FinalQuestion = () => {
         Object.keys(getJudgedOnServer()).map((playerId) => [playerId, true])
       )
   );
-  const showPlayerAnswer = (playerId: string) =>
+  const showPlayerAnswer = (playerId: string) => {
+    playSound("reveal");
     setIsAnswerShown((shown) => ({ ...shown, [playerId]: true }));
+  };
   const [isCorrectAnswerShown, setIsCorrectAnswerShown] = useState(false);
+  const showCorrectAnswer = () => {
+    playSound("reveal");
+    setIsCorrectAnswerShown(true);
+  };
 
   const [timeLeft, setTimeLeft] = useState(() => {
     if (finalQuestionPhase === "timeUp") return 0;
@@ -83,6 +90,32 @@ export const FinalQuestion = () => {
     }
   }, [timeLeft]);
 
+  // Music while the players are betting and thinking, the clock gets loud
+  // for the last seconds and a gong ends the time.
+  useMusic(
+    timeLeft === 0 ? null : isFinalQuestionActive ? "thinking" : "betting"
+  );
+  const previousTimeLeft = useRef(timeLeft);
+  useEffect(() => {
+    if (timeLeft < previousTimeLeft.current) {
+      if (timeLeft === 0) {
+        playSound("timeUp");
+      } else if (timeLeft <= 5) {
+        playSound("tickUrgent");
+      } else if (timeLeft <= 10) {
+        playSound("tick");
+      }
+    }
+    previousTimeLeft.current = timeLeft;
+  }, [timeLeft]);
+  const previousBetsCount = useRef(betsCount);
+  useEffect(() => {
+    if (betsCount > previousBetsCount.current) {
+      playSound("bet");
+    }
+    previousBetsCount.current = betsCount;
+  }, [betsCount]);
+
   // Keep in sync with judgements confirmed by the server
   useEffect(() => {
     const judgedOnServer = getJudgedOnServer();
@@ -104,12 +137,14 @@ export const FinalQuestion = () => {
 
   const handleShowQuestion = () => {
     if (isFinalQuestionActive) return;
+    playSound("open");
     setIsFinalQuestionActive(true);
     sendShowFinalQuestion();
   };
 
   const handleCorrectAnswer = (playerId: string) => {
     if (handledPlayersIds[playerId] !== undefined) return;
+    playSound("correct");
     sendCorrectFinalAnswer(playerId);
     setHandledPlayersIds((handled) => ({ ...handled, [playerId]: true }));
     changePlayersScore(playerId, finalQuestionInfos[playerId]?.betAmount);
@@ -117,6 +152,7 @@ export const FinalQuestion = () => {
 
   const handleIncorrectAnswer = (playerId: string) => {
     if (handledPlayersIds[playerId] !== undefined) return;
+    playSound("wrong");
     sendIncorrectFinalAnswer(playerId);
     setHandledPlayersIds((handled) => ({ ...handled, [playerId]: false }));
     changePlayersScore(playerId, -finalQuestionInfos[playerId]?.betAmount);
@@ -218,7 +254,7 @@ export const FinalQuestion = () => {
               <button
                 type="button"
                 className="pillBtn"
-                onClick={() => setIsCorrectAnswerShown(true)}
+                onClick={showCorrectAnswer}
               >
                 <FontAwesomeIcon icon={faEye} />
                 Pokaż poprawną odpowiedź

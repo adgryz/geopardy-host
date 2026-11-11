@@ -1,6 +1,6 @@
 import { faGift } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BackButton } from "../geopardy/components/BackButton";
 import { Player } from "../services/geopardyTypes";
@@ -8,6 +8,7 @@ import { Player } from "../services/geopardyTypes";
 import { AppContext } from "../services/SocketProvider";
 import { Scenery } from "../festive/Scenery";
 import { Avatar, Wreath } from "../festive/Decor";
+import { playSound } from "../services/sound";
 
 import "./winner.css";
 
@@ -19,6 +20,10 @@ export const Winner = () => {
   const winner = deepCopy.sort((p1, p2) => p2.score - p1.score)[0];
 
   const [isProceeding, setIsProceeding] = useState(false);
+
+  useEffect(() => {
+    playSound("fanfare");
+  }, []);
 
   const goBackToTournamentSummary = () => {
     if (isProceeding) return;

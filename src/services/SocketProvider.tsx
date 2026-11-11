@@ -13,6 +13,7 @@ import {
 import { firstGameSetup, tournamentSetup } from "./gameSetup";
 import { getUseSocket } from "./useSocket";
 import { useImagePreload } from "./useImagePreload";
+import { playSound } from "./sound";
 
 import "./connection.css";
 
@@ -63,6 +64,8 @@ const RETURN_NEW_PLAYERS = "returnNewPlayers";
 const RETURN_CONNECTED_PLAYERS = "returnConnectedPlayers";
 const SEND_START_TOURNAMENT = "sendStartTournament";
 const SEND_REMOVE_PLAYER = "sendRemovePlayer";
+const SEND_SET_GAME_SIZES = "sendSetGameSizes";
+const RETURN_GAME_SIZES = "returnGameSizes";
 const RETURN_START_TOURNAMENT = "returnStartTournament";
 
 //games
@@ -81,6 +84,7 @@ const SEND_OPEN_QUESTION = "sendOpenQuestion";
 const SEND_START_QUESTION = "sendStartQuestion";
 const SEND_ANSWER_JUDGED = "sendAnswerJudged";
 const SEND_NO_ANSWER = "sendNoAnswer";
+const SEND_CANCEL_QUESTION = "sendCancelQuestion";
 const RETURN_ANSWER_QUESTION = "returnAnswerQuestion";
 const RETURN_SCORES = "returnScores";
 
@@ -147,6 +151,9 @@ interface AppData {
   activeTournamentId: string | null;
   resumeTournament: () => void;
   playersCountToStartTheTournament?: number;
+  // number of players in each qualifying game, e.g. [5, 5, 6]
+  gameSizes: number[];
+  setGameSizes: (gameSizes: number[]) => void;
   players: Player[];
   connectedPlayerIds: string[];
   games: Record<string, Game>;
@@ -189,6 +196,7 @@ interface AppData {
   handleCorrectAnswer: () => void;
   handleWrongAnswer: () => void;
   handleNoAnswer: () => void;
+  handleQuestionCancelled: (questionId?: string) => void;
   setCurrentQuestionPoints: (points: number) => void;
 }
 
@@ -200,6 +208,8 @@ export const AppContext = createContext<AppData>({
   sendCreateTournament: () => {},
   sendStartTournament: () => {},
   removePlayer: () => {},
+  gameSizes: [],
+  setGameSizes: () => {},
 
   players: [],
   connectedPlayerIds: [],
@@ -236,6 +246,7 @@ export const AppContext = createContext<AppData>({
   handleCorrectAnswer: () => {},
   handleWrongAnswer: () => {},
   handleNoAnswer: () => {},
+  handleQuestionCancelled: () => {},
   setCurrentQuestionPoints: () => {},
 });
 
@@ -252,6 +263,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     playersCountToStartTheTournament,
     setPlayersCountToStartTheTournament,
   ] = useState<number | undefined>();
+  const [gameSizes, setGameSizesState] = useState<number[]>([]);
   const [gameId, setGameId] = useState<string | undefined>();
   const [currentGameIndex, setCurrentGameIndex] =
     useState<number | undefined>();
@@ -338,6 +350,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     setActiveTournamentId(state.tournamentId);
     setTournamentId(state.tournamentId);
     setPlayersCountToStartTheTournament(state.playersCount);
+    setGameSizesState(state.gameSizes ?? []);
     setPlayers(state.players);
     setConnectedPlayerIds(state.connectedPlayerIds);
     setGames(state.games);
@@ -454,6 +467,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     setGame(newGame);
     setActiveQuestion({ id: questionId, isStarted: false });
     setAnsweringPlayerId(undefined);
+    playSound("select");
     socket.emit(SEND_OPEN_QUESTION, {
       tournamentId,
       gameId,
@@ -474,6 +488,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   // player that is answering, so a double click can't count points twice.
   const judgeAnswer = (isCorrect: boolean) => {
     if (!answeringPlayerId) return;
+    playSound(isCorrect ? "correct" : "wrong");
     changePlayersScore(
       answeringPlayerId,
       isCorrect ? currentQuestionPoints : -currentQuestionPoints
@@ -490,7 +505,28 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   const handleCorrectAnswer = () => judgeAnswer(true);
   const handleWrongAnswer = () => judgeAnswer(false);
   const handleNoAnswer = () => {
+    playSound("noAnswer");
     sendNoAnswer();
+  };
+  // Back to the board without closing the question (e.g. after a misclick) –
+  // it can be opened again.
+  const handleQuestionCancelled = (questionId?: string) => {
+    const newGame: IGameSetup = JSON.parse(JSON.stringify(game));
+    const groups =
+      roundNumber === 1
+        ? newGame.firstQuestionsGroup
+        : newGame.secondQuestionsGroup;
+    const cancelledQuestion = groups
+      .flatMap((questionsGroup) => questionsGroup.questions)
+      .find((question) => question.id === questionId);
+    if (cancelledQuestion) {
+      cancelledQuestion.isAnswered = false;
+      setGame(newGame);
+    }
+    socket.emit(SEND_CANCEL_QUESTION, { gameId, tournamentId });
+    setActiveQuestion(null);
+    setAnsweringPlayerId(undefined);
+    navigate("/game");
   };
   const finishGame = () => navigate("/winner");
 
@@ -556,16 +592,41 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     ({
       tournamentId,
       playersCount,
+      gameSizes,
     }: {
       tournamentId: string;
       playersCount: number;
+      gameSizes?: number[];
     }) => {
       resetTournamentState();
       saveHostTournamentId(tournamentId);
       setActiveTournamentId(tournamentId);
       setTournamentId(tournamentId);
       setPlayersCountToStartTheTournament(playersCount);
+      setGameSizesState(gameSizes ?? []);
       navigate("/lobby");
+    }
+  );
+  // The server validates the sizes and answers with what it accepted
+  const setGameSizes = (newGameSizes: number[]) => {
+    // shown right away, so that quick clicks add up
+    setGameSizesState(newGameSizes);
+    setPlayersCountToStartTheTournament(
+      newGameSizes.reduce((total, gameSize) => total + gameSize, 0)
+    );
+    socket.emit(SEND_SET_GAME_SIZES, { tournamentId, gameSizes: newGameSizes });
+  };
+  useSocket(
+    RETURN_GAME_SIZES,
+    ({
+      playersCount,
+      gameSizes,
+    }: {
+      playersCount: number;
+      gameSizes: number[];
+    }) => {
+      setPlayersCountToStartTheTournament(playersCount);
+      setGameSizesState(gameSizes);
     }
   );
   const sendStartTournament = () => {
@@ -580,6 +641,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   });
   // RETURN_START_TOURNAMENT
   useSocket(RETURN_START_TOURNAMENT, () => {
+    playSound("start");
     navigate("/tournament");
   });
 
@@ -610,7 +672,10 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     }
   );
   // RETURN_START_GAME
-  useSocket(RETURN_START_GAME, () => navigate("/game"));
+  useSocket(RETURN_START_GAME, () => {
+    playSound("start");
+    navigate("/game");
+  });
   const sendStartGame = () => {
     socket.emit(SEND_START_GAME, { tournamentId, gameId });
   };
@@ -630,6 +695,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   // Question
   // RETURN_ANSWER_QUESTION
   useSocket(RETURN_ANSWER_QUESTION, ({ playerId }: { playerId: string }) => {
+    playSound("buzz");
     setAnsweringPlayerId(playerId);
     setCurrentGamePlayers((players) =>
       players.map((player) => ({
@@ -662,6 +728,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   );
   const sendStartQuestion = () => {
     socket.emit(SEND_START_QUESTION, { gameId, tournamentId });
+    playSound("open");
     setActiveQuestion((question) =>
       question ? { ...question, isStarted: true } : question
     );
@@ -749,6 +816,8 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         connectedPlayerIds,
         games,
         playersCountToStartTheTournament,
+        gameSizes,
+        setGameSizes,
 
         sendStartGame,
         sendProceedToTheNextGame,
@@ -783,6 +852,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         handleCorrectAnswer,
         handleWrongAnswer,
         handleNoAnswer,
+        handleQuestionCancelled,
         setCurrentQuestionPoints,
       }}
     >

@@ -43,3 +43,31 @@
 .gamePlayerScore.isNegative {
   color: #f08d92;
 }
+
+/* więcej niż 4 graczy — mniejsze plakietki, w razie potrzeby w dwóch rzędach */
+.playersContainer.isCompact {
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  /* miejsce na numer rundy po lewej */
+  padding: 0 150px;
+}
+.isCompact .playerContainer {
+  gap: 10px;
+  padding: 6px 16px 6px 6px;
+  min-width: 0;
+}
+.isCompact .gamePlayerName {
+  font-size: 18px;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.isCompact .gameScoreContainer {
+  margin-left: 2px;
+  padding-left: 12px;
+  font-size: 22px;
+}
+.isCompact .gameScoreContainer .gift {
+  display: none;
+}

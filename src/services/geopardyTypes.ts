@@ -93,6 +93,7 @@ export type Game = {
 export type HostState = {
   tournamentId: string;
   playersCount: number;
+  gameSizes?: number[];
   players: Player[];
   games: Record<string, Game>;
   finalGame: Game;

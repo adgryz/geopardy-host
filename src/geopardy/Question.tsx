@@ -8,6 +8,7 @@ import {
   faGift,
   faEye,
   faEyeSlash,
+  faBan,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { AppContext } from "../services/SocketProvider";
@@ -29,16 +30,19 @@ export const Question = () => {
     handleWrongAnswer,
     handleNoAnswer,
     handleQuestionFinished,
+    handleQuestionCancelled,
     activeQuestion,
   } = useContext(AppContext);
   const params = useParams();
 
   // Order matters: the judgement has to reach the server before the final
   // question of the round is started.
-  const handleBackClick = () => {
+  const onNoAnswer = () => {
     handleNoAnswer();
     handleQuestionFinished();
   };
+  // Going back doesn't use the question up – it returns to the board
+  const handleBackClick = () => handleQuestionCancelled(params.id);
   const onGoodAnswer = () => {
     handleCorrectAnswer();
     handleQuestionFinished();
@@ -202,6 +206,14 @@ export const Question = () => {
               {isAnswerShown ? "Ukryj odpowiedź" : "Pokaż odpowiedź"}
             </button>
           )}
+          <button
+            type="button"
+            className="pillBtn noAnswerButton"
+            onClick={onNoAnswer}
+          >
+            <FontAwesomeIcon icon={faBan} />
+            Brak odpowiedzi
+          </button>
           <BackButton onClick={handleBackClick} />
         </div>
       </div>

@@ -95,3 +95,66 @@
   from { opacity: 0; transform: translateY(-60px) rotate(-8deg); }
   to { opacity: 1; transform: none; }
 }
+
+/* liczba graczy w grach kwalifikacyjnych */
+.gameSizes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 3vh;
+}
+.gameSizesLabel {
+  color: var(--cream-dim);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.gameSizesList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+.gameSize {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 10px 8px 22px;
+  border-radius: 999px;
+}
+.gameSizeName {
+  font-weight: 700;
+  font-size: 18px;
+}
+.gameSizeStepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gameSizeValue {
+  min-width: 2ch;
+  text-align: center;
+  font-size: 30px;
+  color: var(--gold-200);
+}
+.gameSizeButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--frost-line);
+  background: var(--frost);
+  color: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.gameSizeButton:hover:not(:disabled) {
+  border-color: var(--gold-400);
+  background: rgba(233, 196, 106, 0.18);
+}
+.gameSizeButton:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
