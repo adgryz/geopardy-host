@@ -74,6 +74,7 @@ export const firstGameSetupBase: IGameSetupBase = {
   finalQuestionCategory: "Zegar",
   finalQuestionText:
     "Ile razy w ciągu doby pokryją się wskazówki godzinowa i minutowa?",
+  finalQuestionAnswer: "22 razy",
   firstQuestionsGroup: [
     {
       groupName: "Fragmenty",
@@ -83,32 +84,34 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "Jakie to zwierze? ",
           id: "11",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1abJHG3sVp_Lms4F6SbjD-alNE6svYw57",
+          answer: "Nosacz (sundajski)",
+          imageUrl: "/questions/g1-fragmenty-11.jpg",
         },
         {
           text: "Jakie to zwierze? ",
           id: "12",
+          answer: "Delfin",
           imageUrl:
             "https://cdn.shopify.com/s/files/1/0355/6950/0297/files/splashy-580_480x480.jpg?v=1584150900",
         },
         {
           text: "Jakie to zwierze? ",
           id: "13",
+          answer: "Orangutan",
           imageUrl:
             "https://img.freepik.com/premium-photo/orangutan-s-hands-are-playing-nature_60359-614.jpg?w=2000",
         },
         {
           text: "Jakie to zwierze? ",
           id: "14",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1LDeqdPVdDTSG1f0bajL6tt-keq1L3P2i",
+          answer: "Wiewiórka",
+          imageUrl: "/questions/g1-fragmenty-14.jpg",
         },
         {
           text: "Jakie to zwierze? ",
           id: "15",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1Scy84Ud2S-o-RutKi5g6iT9OkppMHLkp",
+          answer: "Panda mała (pandka ruda, panda czerwona)",
+          imageUrl: "/questions/g1-fragmenty-15.jpg",
         },
       ],
     },
@@ -120,22 +123,27 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "Z jakiego mleka powstaje oscypek?",
           id: "21",
+          answer: "Z mleka owczego",
         },
         {
           text: "Czym nadziany jest rogal  świętomarciński?",
           id: "22",
+          answer: "Masą z białego maku (z bakaliami i orzechami)",
         },
         {
           text: "Z czego robi się kaszankę (3składniki)?",
           id: "23",
+          answer: "Krew, kasza (gryczana lub jęczmienna), podroby (wątroba, płuca) i słonina",
         },
         {
           text: "Czym jest gzik? ",
           id: "24",
+          answer: "Twaróg ze śmietaną i cebulą/szczypiorem (poznański, podawany z pyrami)",
         },
         {
           text: "Wymień 5 rodzajów barszczu",
           id: "25",
+          answer: "Np. czerwony, biały, ukraiński, grzybowy, z kapusty (też: zabielany, zimny)",
         },
       ],
     },
@@ -147,22 +155,27 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "Jak nazywa się rzymski odpowiednik Zeusa?",
           id: "31",
+          answer: "Jowisz",
         },
         {
           text: "Jak nazywa się słowiański gromowładny bóg?",
           id: "32",
+          answer: "Perun",
         },
         {
           text: "Jaką królewną uwiódł Zeus pod postacią śnieżnobiałego byka?",
           id: "33",
+          answer: "Europą",
         },
         {
           text: "Jakie zwierzęta ciągnęły rydwan Thora?",
           id: "34",
+          answer: "Kozy (kozły)",
         },
         {
           text: "Jaki ptak jest atrybutem Hery, żony Zeusa?",
           id: "35",
+          answer: "Paw",
         },
       ],
     },
@@ -174,22 +187,27 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "W jakim serialu czarnym charakterem był Janusz Tracz?",
           id: "41",
+          answer: "Plebania",
         },
         {
           text: "Janusz Palikot oprócz bycia znanym kontrowersyjnym politykiem jest także przedsiębiorcą. Jaki jest jego główny obszar działalności? ",
           id: "42",
+          answer: "Produkcja alkoholu (Ambra, Polmos Lublin, Manufaktura Piwa Wódki i Wina)",
         },
         {
           text: "Jak ma na imię i nazwisko aktor grający Stefana “Siarę” Siarzewskiego? ",
           id: "43",
+          answer: "Janusz Rewiński",
         },
         {
           text: "Jaką pełną nazwę ma słynna “Małpa Janusz” z memów?",
           id: "44",
+          answer: "Nosacz sundajski",
         },
         {
           text: "Czego bóstwem był jeden z najstarszych rzymskich bogów - Janus?",
           id: "45",
+          answer: "Bram, drzwi i przejść, początku i końca, a także umów i sojuszy (bóg o dwóch twarzach)",
         },
       ],
     },
@@ -201,22 +219,27 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "KAIR",
           id: "51",
+          answer: "IRAK (anagram)",
         },
         {
           text: "NADIA",
           id: "52",
+          answer: "DANIA (anagram)",
         },
         {
           text: "IGRANIE",
           id: "53",
+          answer: "NIGERIA (anagram)",
         },
         {
           text: "BAGNO",
           id: "54",
+          answer: "GABON (anagram)",
         },
         {
           text: "KADROWE",
           id: "55",
+          answer: "EKWADOR (anagram)",
         },
       ],
     },
@@ -230,22 +253,27 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "Ile par chromosów ma zdrowy człowiek?",
           id: "61",
+          answer: "23 pary",
         },
         {
           text: "Ile wynosi pierwiastek z 289?",
           id: "62",
+          answer: "17",
         },
         {
           text: "Ile ksiąg ma stary i nowy testament?",
           id: "63",
+          answer: "46 + 27 = 73 (kanon katolicki); w protestanckim 66",
         },
         {
           text: "Ile wynosi złota proporcja?",
           id: "64",
+          answer: "Ok. 1,618; zalicz 1,62 (tolerancja ±0,1)",
         },
         {
           text: "Ile kobiet jest wielokrotnymi laureatkami nagrody nobla?",
           id: "65",
+          answer: "Jedna: Maria Skłodowska-Curie (fizyka 1903, chemia 1911)",
         },
       ],
     },
@@ -257,32 +285,35 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "Jakiej rasy jest Pieseł ?",
           id: "71",
+          answer: "Shiba inu",
           imageUrl:
             "https://bi.im-g.pl/im/d0/a9/e1/z14789072Q,Prawdopodobnie-najslawniejsze-zdjecie-Piesela.jpg",
         },
         {
           text: "Na co krzyczy kobieta z mema?",
           id: "72",
-          imageUrl:
-            "https://wompampsupport.azureedge.net/fetchimage?siteId=7575&v=2&jpgQuality=100&width=700&url=https%3A%2F%2Fi.kym-cdn.com%2Fphotos%2Fimages%2Fnewsfeed%2F001%2F505%2F717%2F49b.jpg",
+          answer: "Na kota",
+          imageUrl: "/questions/g1-memoznastwo-72.jpg",
         },
         {
           text: "Jak się nazywa ten piosenkar?",
           id: "73",
+          answer: "Drake",
           imageUrl:
             "https://i.pinimg.com/474x/88/9d/1b/889d1b3f74b7c20c845f2a2f7db2ca8a.jpg",
         },
         {
           text: "Jak nazywa się ten mem?",
           id: "74",
+          answer: "Me Gusta",
           imageUrl:
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK_kt-mfxlZR0ERuF3H_nxu1EzCtFhAANArSdn5nC7DckXTKNdFL5H7dtCBrygqnWKNo4&usqp=CAU",
         },
         {
           text: "Jak nazywa się i co oznacza ten mem?",
           id: "75",
-          imageUrl:
-            "https://media.wired.co.uk/photos/607d91994d40fbb952b6ad64/master/w_1600,c_limit/wired-meme-nft-brian.jpg",
+          answer: "Bad Luck Brian (pechowy Brian): komuś wszystko idzie źle",
+          imageUrl: "/questions/g1-memoznastwo-75.jpg",
         },
       ],
     },
@@ -294,22 +325,27 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "Pod jaką rośliną dajemy sobie świątecznego buziaka?",
           id: "81",
+          answer: "Pod jemiołą",
         },
         {
           text: "Czym jest kutia?",
           id: "82",
+          answer: "Świąteczny deser z pszenicy, maku, miodu i bakalii",
         },
         {
           text: "W którym miesiącu roku obchodzi się Święta Bożego Narodzenia w Kościele Prawosławnym?",
           id: "83",
+          answer: "W styczniu (7 stycznia, kalendarz juliański)",
         },
         {
           text: "W większości Poslki prezenty przynosi Święty Mikołaj. Wymień 2 inne postaci, które przynoszą prezenty zgodnie z tradycją w różnych regionach Polskii",
           id: "84",
+          answer: "Np. Gwiazdor, Dziadek Mróz, Dzieciątko, Aniołek, Gwiazdka",
         },
         {
           text: "Każdy zna Rudolfa Czerwononosego. Podaj imię jednego innego renifera z zaprzęgu Świętego Mikołaja",
           id: "85",
+          answer: "Np. Fircyk, Tancerz, Pyszałek, Złośnik, Kometek, Amorek, Profesorek, Błyskawiczny (ang. Dasher, Dancer, Prancer, Vixen, Comet, Cupid, Donner, Blitzen)",
         },
       ],
     },
@@ -321,22 +357,27 @@ export const firstGameSetupBase: IGameSetupBase = {
         {
           text: "Z jakiego pierwiastka najczęściej robi się baterie/akumulatory?",
           id: "91",
+          answer: "Lit",
         },
         {
           text: "Z jakiego pierwiastka zbudowany jest diament?",
           id: "92",
+          answer: "Węgiel",
         },
         {
           text: "Jaki metal topi się w ręce?",
           id: "93",
+          answer: "Gal",
         },
         {
           text: "Jakim pierwiastkiem można się zatruć jeśli jemy zbyt dużo ryb?",
           id: "94",
+          answer: "Rtęć",
         },
         {
           text: "Jaki pierwiastek w formie gazowej znajduje się w żarówce i chroni wino przed utlenieniem?",
           id: "95",
+          answer: "Argon",
         },
       ],
     },
@@ -384,6 +425,7 @@ export const secondGameSetupBase: IGameSetupBase = {
   finalQuestionCategory: "Stolica",
   finalQuestionText:
     "Jakie miasto jest najdalej na południe wysuniętą stolicą państwa w Unii Europejskiej?",
+  finalQuestionAnswer: "Nikozja (Cypr)",
   firstQuestionsGroup: [
     {
       groupName: "Flagi",
@@ -393,30 +435,35 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "Jakiego kraju to flaga?",
           id: "11",
+          answer: "Rumunia",
           imageUrl:
             "https://media.istockphoto.com/photos/romania-flag-picture-id1178991990?k=20&m=1178991990&s=612x612&w=0&h=k86qoTqulQhryYbQJygwUpgzhGDWpvdDjjzcAu8HJFA=",
         },
         {
           text: "Jakiego kraju to flaga?",
           id: "12",
+          answer: "Słowenia",
           imageUrl:
             "https://img.freepik.com/premium-wektory/flaga-slowenii-wiejacy-wiatr-czesc-serii-machac-flaga-slowenii_126712-286.jpg",
         },
         {
           text: "Jakiego kraju to flaga?",
           id: "13",
+          answer: "Kolumbia",
           imageUrl:
             "https://media.istockphoto.com/photos/colombias-flag-picture-id508515841?k=20&m=508515841&s=612x612&w=0&h=fQ7fexfVO7hp2nmRUmvJcv6fm37aC0UaYnDWkbc5x_o=",
         },
         {
           text: "Jakiego kraju to flaga?",
           id: "14",
+          answer: "Indonezja",
           imageUrl:
             "https://media.istockphoto.com/photos/indonesia-flag-picture-id479423455?k=20&m=479423455&s=612x612&w=0&h=GU9rSDjhufNw-pYbU3fczh5bIltKbEpHMvZQ_p0vfFU=",
         },
         {
           text: "Jakiego kraju to flaga?",
           id: "15",
+          answer: "Somalia",
           imageUrl:
             "https://media.istockphoto.com/photos/image-of-the-flag-somalia-series-africa-picture-id1161840605?k=20&m=1161840605&s=612x612&w=0&h=vUHkujN_Rw8qheOsWTCqrOEtV8mH7XbdZb5uUHq7IMo=",
         },
@@ -430,22 +477,27 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "Wymień co najmniej 5 składników “Full English Breakfast”",
           id: "21",
+          answer: "Np. bekon, kiełbaski, jajka, fasolka, pomidor, pieczarki, black pudding, tosty (też hash browns)",
         },
         {
           text: "Czym jest chzaczapuri i z jakiego kraju pochodzi?",
           id: "22",
+          answer: "Zapiekany placek z serem (i jajkiem); Gruzja",
         },
         {
           text: "Który kolor potrawy curry jest najpikantniejszy?",
           id: "23",
+          answer: "Zielone (tajskie zielone curry)",
         },
         {
           text: "Czym są enchiladas i z jakiego kraju pochodzą? ",
           id: "24",
+          answer: "Zawijane tortille kukurydziane z nadzieniem, zapiekane w sosie chili; Meksyk",
         },
         {
           text: "Czym są dolmy i z jakiego kraju pochodzą?",
           id: "25",
+          answer: "Liście winorośli nadziewane ryżem (i mięsem); Turcja (popularne też w Grecji)",
         },
       ],
     },
@@ -457,22 +509,27 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "🦑 🕹 ",
           id: "31",
+          answer: "Squid Game (Gra w kałamarnicę)",
         },
         {
           text: "🍆🍑👩‍🏫📚",
           id: "32",
+          answer: "Sex Education",
         },
         {
           text: "🏠♠️♥️♣️♦️ ",
           id: "33",
+          answer: "House of Cards",
         },
         {
           text: "🎲 🚽",
           id: "34",
+          answer: "Gra o tron",
         },
         {
           text: "👨‍🔬💉🔵💊",
           id: "35",
+          answer: "Breaking Bad",
         },
       ],
     },
@@ -484,22 +541,27 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "Ile czasu zajmuje doatrcie światła z słońca do ziemi?",
           id: "41",
+          answer: "Ok. 8 minut (8 min 20 s)",
         },
         {
           text: "Jak ma na imię i nazwisko Doda?",
           id: "42",
+          answer: "Dorota Rabczewska",
         },
         {
           text: "Jaka gwiazda jest najbliżej ziemi nie licząc słońca?",
           id: "43",
+          answer: "Proxima Centauri",
         },
         {
           text: "Z ilu gwiazd składa się duży wóz? ",
           id: "44",
+          answer: "Z 7",
         },
         {
           text: "Jaka galaktyka jest naszym najbliższym sąsiadem?",
           id: "45",
+          answer: "Galaktyka Andromedy (najbliższa duża); ściśle: karłowate, np. Karzeł Wielkiego Psa",
         },
       ],
     },
@@ -511,22 +573,27 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "JUTA",
           id: "51",
+          answer: "TUJA (anagram)",
         },
         {
           text: "RZEP",
           id: "52",
+          answer: "PERZ (anagram)",
         },
         {
           text: "MANILA",
           id: "53",
+          answer: "MALINA (anagram)",
         },
         {
           text: "KALINOWA",
           id: "54",
+          answer: "KONWALIA (anagram)",
         },
         {
           text: "RENKLODA",
           id: "55",
+          answer: "KOLENDRA (anagram)",
         },
       ],
     },
@@ -540,30 +607,33 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "Co to za budynek?",
           id: "61",
+          answer: "Luwr (Paryż)",
           imageUrl:
             "https://media.cntraveler.com/photos/57d961ce3e6b32bf25f5ad0f/16:9/w_2560,c_limit/most-beautiful-paris-louvre-GettyImages-536267205.jpg",
         },
         {
           text: "Co to za budynek?",
           id: "62",
+          answer: "Zamek Neuschwanstein (Bawaria)",
           imageUrl:
             "https://www.travelandleisure.com/thmb/umcoSMJygYyG5OIYDdBPgnrJGLc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/01-neuschwanstein-castle-bavaria-NEUSCHWANSTEIN0417-273a040698f24fc1ac22e717bb3f1f0c.jpg",
         },
         {
           text: "Co to za budynek?",
           id: "63",
-          imageUrl:
-            "https://www.cuddlynest.com/blog/wp-content/uploads/2020/09/duomo-milan-most-beautiful-buildings-world.jpg",
+          answer: "Katedra w Mediolanie (Duomo di Milano)",
+          imageUrl: "/questions/g2-cuda-europy-63.jpg",
         },
         {
           text: "Co to za budynek?",
           id: "64",
-          imageUrl:
-            "https://www.cuddlynest.com/blog/wp-content/uploads/2020/09/saint-basil-cathedral-most-beautiful-buildings-world.jpg",
+          answer: "Sobór Wasyla Błogosławionego / katedra św. Bazylego (Moskwa)",
+          imageUrl: "/questions/g2-cuda-europy-64.jpg",
         },
         {
           text: "Co to za budynek?",
           id: "65",
+          answer: "Hagia Sophia (Stambuł)",
           imageUrl: "https://muze.gen.tr/images/hagia_sophia_mosque.jpg",
         },
       ],
@@ -576,22 +646,27 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "Jak nazwiemy podwyższenie pomnika?",
           id: "71",
+          answer: "Piedestał (też: postument)",
         },
         {
           text: "Jak nazwiemy wyrażenie brzmiące tak samo czytane od lewej do prawej i od prawej do lewej?",
           id: "72",
+          answer: "Palindrom",
         },
         {
           text: "Jakim przymiotnikiem określimy osobę przesadnie wstydliaw, gorszącą się sprawami seksu? ",
           id: "73",
+          answer: "Pruderyjny",
         },
         {
           text: "Jak nazwiemy kontakty seksualne pozbawione więzi uczuciowych, podejmowane z przypadkowymi, często zmienianymi partneram?",
           id: "74",
+          answer: "Promiskuityzm",
         },
         {
           text: "Jak nazwiemy uroczysty tekst pochwalny, sławiący jakąś osobę, czyn lub wydarzenie?",
           id: "75",
+          answer: "Panegiryk (także: pean)",
         },
       ],
     },
@@ -640,22 +715,27 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "Podczas pandemii której choroby, zarazki przenosiły się ze szczurów na ludzi? ",
           id: "91",
+          answer: "Dżumy",
         },
         {
           text: "Produkcja jakiego oleju zabija Orangutanny?",
           id: "92",
+          answer: "Oleju palmowego",
         },
         {
           text: "Jak nazywał się smok z filmu Mulan?",
           id: "93",
+          answer: "Mushu",
         },
         {
           text: "Co było celem “Inwazji w Zatoce Świń” w 1961 roku?",
           id: "94",
+          answer: "Obalenie rządu Fidela Castro na Kubie",
         },
         {
           text: "Jak nazwiemy wykastrowanego i specjlanie utuczonego młodego koguta?",
           id: "95",
+          answer: "Kapłon",
         },
       ],
     },
@@ -667,22 +747,27 @@ export const secondGameSetupBase: IGameSetupBase = {
         {
           text: "Czym jest tombak?",
           id: "101",
+          answer: "Stop miedzi z cynkiem (imitacja złota)",
         },
         {
           text: "Jaka jest różnica pomiędzy brylantem a diamentem?",
           id: "102",
+          answer: "Brylant to diament oszlifowany szlifem brylantowym",
         },
         {
           text: "Jakiego kamienia szlachetnego użuwał pierwszy działający laser?",
           id: "103",
+          answer: "Rubinu",
         },
         {
           text: "Ile gram to jeden karat?",
           id: "104",
+          answer: "0,2 g",
         },
         {
           text: "Gdzie znajduje się największy diament - Cullian I, Wielka Gwiazda Afryki?",
           id: "105",
+          answer: "W brytyjskim berle królewskim (Klejnoty Koronne, Tower w Londynie)",
         },
       ],
     },
@@ -693,6 +778,7 @@ export const thirdGameSetupBase: IGameSetupBase = {
   finalQuestionCategory: "Góry",
   finalQuestionText:
     "Jak nazywa się ośmiotysięcznik, którego nazwa wywodzi się z sanskrytu i znaczy 'Naga Góra'?",
+  finalQuestionAnswer: "Nanga Parbat",
   firstQuestionsGroup: [
     {
       groupName: "Kaszojady",
@@ -702,32 +788,35 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "Kto to?",
           id: "11",
+          answer: "Rihanna",
           imageUrl:
             "https://en.kidsmusic.info/photo/rihanna-fenty/rihanna-fenty-4c46516c-44f4-42da-a185-3efccd80e438.jpg?size=0x960",
         },
         {
           text: "Kto to?",
           id: "12",
+          answer: "Freddie Mercury",
           imageUrl:
             "https://scontent.fosl1-1.fna.fbcdn.net/v/t1.18169-9/12295313_950155968398266_7484014228676456703_n.png?_nc_cat=110&ccb=1-7&_nc_sid=9267fe&_nc_ohc=G0grekpO6HIAX9fmahj&_nc_ht=scontent.fosl1-1.fna&oh=00_AfBIjTbIVqIt0Cto0Rfkami_RJPEhp4tkWysQBo-wZ49Ug&oe=6399C173",
         },
         {
           text: "Kto to?",
           id: "13",
+          answer: "Katy Perry",
           imageUrl:
             "https://i.pinimg.com/564x/d8/6f/f3/d86ff3136a33c918ee5f582c8fc9df00.jpg",
         },
         {
           text: "Kto to?",
           id: "14",
-          imageUrl:
-            "https://cdn.mamamia.com.au/wp/wp-content/uploads/2019/03/22134107/michael-jackson.jpg",
+          answer: "Michael Jackson",
+          imageUrl: "/questions/g3-kaszojady-14.jpg",
         },
         {
           text: "Kto to?",
           id: "15",
-          imageUrl:
-            "https://images.hellomagazine.com/imagenes/homes/2020090296442/adele-childhood-flat-london-west-norwood-inside-photos/0-461-975/adele-childhood-flat-bedroom-walls-z-z.jpg",
+          answer: "Adele",
+          imageUrl: "/questions/g3-kaszojady-15.jpg",
         },
       ],
     },
@@ -739,22 +828,27 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "🕷🙍‍♂️",
           id: "21",
+          answer: "Spider-Man",
         },
         {
           text: "🚢 🧊",
           id: "22",
+          answer: "Titanic",
         },
         {
           text: "🐴 🩸",
           id: "23",
+          answer: "Ojciec chrzestny",
         },
         {
           text: "😈👢",
           id: "24",
+          answer: "Diabeł ubiera się u Prady",
         },
         {
           text: "🗡🏹🪓",
           id: "25",
+          answer: "Władca Pierścieni: Drużyna Pierścienia",
         },
       ],
     },
@@ -766,22 +860,27 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "'Nie, nie guziczki! Nie lukrowane guziczki!'",
           id: "31",
+          answer: "Ciastek (Piernik)",
         },
         {
           text: "'Błagam nie, ja nie chcę na opał!'",
           id: "32",
+          answer: "Pinokio",
         },
         {
           text: "'Z moim mózgiem i Twoim gabarytem, cała droga nasza.'",
           id: "33",
+          answer: "Osioł",
         },
         {
           text: "'Julio Iglesias! FC Barcelona!'",
           id: "34",
+          answer: "Kot w Butach",
         },
         {
           text: "'Robią sobie rękawiczki z ludzkiej skóry i breloczki z wątroby'",
           id: "35",
+          answer: "Shrek",
         },
       ],
     },
@@ -830,22 +929,27 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "Na jakie spodnie potocznie mówi się Szwedy?",
           id: "51",
+          answer: "Na dzwony",
         },
         {
           text: "Czym jest toczek?",
           id: "52",
+          answer: "Mały okrągły kapelusik bez ronda (także kask jeździecki)",
         },
         {
           text: "Czym jest mufka?",
           id: "53",
+          answer: "Futrzany rękaw do ogrzewania dłoni",
         },
         {
           text: "Czym były Pepegi?",
           id: "54",
+          answer: "Płócienne tenisówki z PRL (nazwa od PPG: Polski Przemysł Gumowy)",
         },
         {
           text: "Czym był dublet?",
           id: "55",
+          answer: "Obcisły męski kaftan z rękawami (XIV–XVII w.)",
         },
       ],
     },
@@ -859,32 +963,32 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "Czyja to fryzura?",
           id: "61",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1Oj_ygESdqBC1KX6comxp3GLZ88o-b2JR",
+          answer: "Michał Wiśniewski",
+          imageUrl: "/questions/g3-fryzury-61.jpg",
         },
         {
           text: "Czyja to fryzura?",
           id: "62",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1PyaBmcygdM7owYOh1Sqc6lzdG_TY8L65",
+          answer: "Magda Gessler",
+          imageUrl: "/questions/g3-fryzury-62.jpg",
         },
         {
           text: "Czyja to fryzura?",
           id: "63",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1YexQJNxbZjhjPtMabZkxUltA2pRJ8KvK",
+          answer: "Albert Einstein",
+          imageUrl: "/questions/g3-fryzury-63.jpg",
         },
         {
           text: "Czyja to fryzura?",
           id: "64",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=16IygtwUe-CShGCmcVUPK5kMoj8rMyJ56",
+          answer: "Billie Eilish",
+          imageUrl: "/questions/g3-fryzury-64.jpg",
         },
         {
           text: "Czyja to fryzura?",
           id: "65",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1opVlyEW7fjhTLneH7nyNPwjqnaWwp_Br",
+          answer: "Cristiano Ronaldo",
+          imageUrl: "/questions/g3-fryzury-65.jpg",
         },
       ],
     },
@@ -896,22 +1000,27 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "Ile osób potrzeba do zagrania w brydża?",
           id: "71",
+          answer: "4",
         },
         {
           text: "Jak na imię i nazwisko ma najbardziej utytuowany polski żużlowiec? ",
           id: "72",
+          answer: "Tomasz Gollob; uznaj też Bartosza Zmarzlika (więcej tytułów mistrza świata)",
         },
         {
           text: "W jakim e-sporcie był słynny Marcin “Jankos” Jankowski na poziomie międzynarodowym?",
           id: "73",
+          answer: "League of Legends",
         },
         {
           text: "Jak profesjonalnie nazywa się “czajnik” popychany w curlingu?",
           id: "74",
+          answer: "Kamień (curlingowy)",
         },
         {
           text: "Jak nazywa się popularny wśród studentów USA i Kanady sport w którym z pomocą specjalnej rakiety,przypominającej siatkę na motyle, należy umieścić piłkę w bramce przeciwnika?",
           id: "75",
+          answer: "Lacrosse",
         },
       ],
     },
@@ -923,22 +1032,27 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "Z czym związane jest słowiańśkie święto - Noc Kupały?",
           id: "81",
+          answer: "Z letnim przesileniem (najkrótsza noc w roku): ogień, woda, miłość",
         },
         {
           text: "Czego bogiem był Swarożyc?",
           id: "82",
+          answer: "Ognia (i słońca)",
         },
         {
           text: "Ile twarzy miał bóg Świętowit?",
           id: "83",
+          answer: "4",
         },
         {
           text: "Kto stworzył świat według mitologii słowiańskiej",
           id: "84",
+          answer: "Białobóg i Czarnobóg (w innych wersjach Swaróg lub Rod)",
         },
         {
           text: "Czym były Ubożęta",
           id: "85",
+          answer: "Opiekuńcze duszki domowe (podobne do krasnoludków), przynoszące dobrobyt",
         },
       ],
     },
@@ -950,22 +1064,27 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "Co jest zielone w piosence Zenka Martyniuka?",
           id: "91",
+          answer: "Oczy (\"Przez twe oczy zielone\")",
         },
         {
           text: "Jak nazywa się barwnik fotosyntetyczny roślin nadający im zielony kolor?",
           id: "92",
+          answer: "Chlorofil",
         },
         {
           text: "Jaki polski poeata był twórcą 'Teatrzyku Zielona Gęś'?",
           id: "93",
+          answer: "Konstanty Ildefons Gałczyński",
         },
         {
           text: "Jaka jest potoczna nazwa chrześcijańskiego święta Zesłania Ducha Świętego?",
           id: "94",
+          answer: "Zielone Świątki",
         },
         {
           text: "W jakim filmi z 1999 r. Tom Hanks grał strażnika więziennego?",
           id: "95",
+          answer: "Zielona mila",
         },
       ],
     },
@@ -977,22 +1096,27 @@ export const thirdGameSetupBase: IGameSetupBase = {
         {
           text: "Jaką roślinę nazywamy królową kwiatów?",
           id: "101",
+          answer: "Róża",
         },
         {
           text: "Jaka roślina jest podstawą wyżywienia ok. 1/3 ludności świata?",
           id: "102",
+          answer: "Ryż",
         },
         {
           text: "Jaka roślina oleista ma żółte kwiaty?",
           id: "103",
+          answer: "Rzepak",
         },
         {
           text: "Jaką roślinę inaczej nazwiemy azalią lub różanecznikiem?",
           id: "104",
+          answer: "Rododendron",
         },
         {
           text: "Wyciąg z kwiatów jakiej rośliny ma działanie przeciwzapalne i jest nazywany azulanem?",
           id: "105",
+          answer: "Rumianek",
         },
       ],
     },
@@ -1002,6 +1126,7 @@ export const thirdGameSetupBase: IGameSetupBase = {
 export const finalGameSetupBase: IGameSetupBase = {
   finalQuestionText:
     "Jest to jedyne państwo, któremu od odzyskania niepodległości Polska wypowiedziała wojnę. Wyzwania nie przyjęto. O jakim państwie mowa?",
+  finalQuestionAnswer: "Japonia (11 grudnia 1941, rząd RP na uchodźstwie; Japonia nie przyjęła wypowiedzenia)",
   finalQuestionCategory: "Historia XX Wieku",
   firstQuestionsGroup: [
     {
@@ -1012,22 +1137,27 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Jakie gryzonie budują żeremia?",
           id: "71",
+          answer: "Bobry",
         },
         {
           text: "Jakiego gryzonia, zapadającego w zimowy sens, można spotkać w Tatrach?",
           id: "72",
+          answer: "Świstak",
         },
         {
           text: "Na jakim kontynencie żyje największy gryzoń - kapibara?",
           id: "73",
+          answer: "W Ameryce Południowej",
         },
         {
           text: "Jaką inną nazwę nosi Kawia Domowa? ",
           id: "74",
+          answer: "Świnka morska",
         },
         {
           text: "Jak nazywa się podobny do bobra gryzoń nazywany szczurem wodnym i pochodzący z Ameryki Południowej?",
           id: "75",
+          answer: "Nutria (bobroszczur). Uwaga: piżmak pochodzi z Ameryki Płn.",
         },
       ],
     },
@@ -1039,32 +1169,32 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Kto to?",
           id: "81",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1gZZZRPuK4D8B6o19LA9gOCryN0CJxK9K",
+          answer: "Mushu (Mulan)",
+          imageUrl: "/questions/final-cien-disneya-81.png",
         },
         {
           text: "Kto to?",
           id: "82",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=16mXnYxzFZyZ2wX1O2hMmvY0VybAWHvO_",
+          answer: "Dżafar (Aladyn)",
+          imageUrl: "/questions/final-cien-disneya-82.png",
         },
         {
           text: "Kto to?",
           id: "83",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1fkF9yYrdMah5FAfLrDZicTcmbujLjoA3",
+          answer: "Megara (Herkules)",
+          imageUrl: "/questions/final-cien-disneya-83.png",
         },
         {
           text: "Kto to?",
           id: "84",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1D3detmdT9UpRJAR_WHV3kgvmMKjg9ue2",
+          answer: "Gaston (Piękna i Bestia)",
+          imageUrl: "/questions/final-cien-disneya-84.png",
         },
         {
           text: "Kto to?",
           id: "85",
-          imageUrl:
-            "https://drive.google.com/uc?export=view&id=1Y9jeQsWatzXrighrnTOvM2LbN7arRBrh",
+          answer: "Nani (Lilo i Stitch)",
+          imageUrl: "/questions/final-cien-disneya-85.png",
         },
       ],
     },
@@ -1076,22 +1206,27 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Co znaczy po hiszpańsku Amiga?",
           id: "91",
+          answer: "Przyjaciółka",
         },
         {
           text: "Co znaczą tytuły piosenek niemieckiego zespołu Rammstein - “Du Hast” i “Sonne”?",
           id: "92",
+          answer: "\"Ty masz\" (gra słów z \"nienawidzisz\") i \"Słońce\"",
         },
         {
           text: "Co znaczy łacińskie “Sic!”?",
           id: "93",
+          answer: "\"Tak\" (tak było napisane, tak w oryginale)",
         },
         {
           text: "Co oznacza francuskie “Comment ça va?” w znanej piosence “Komo sawa? Komsi komsi komsa” ?",
           id: "94",
+          answer: "\"Jak się masz?\" / \"Co słychać?\"",
         },
         {
           text: "Co znaczy “Lupus in fabula” po łacinie ?",
           id: "95",
+          answer: "\"Wilk w bajce\": o wilku mowa",
         },
       ],
     },
@@ -1103,22 +1238,27 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Co oznacza skrót PZPR?",
           id: "41",
+          answer: "Polska Zjednoczona Partia Robotnicza",
         },
         {
           text: "Które województwa wchodzą w skład ziem odzyskanych po II WŚ? (Wymień 3)",
           id: "42",
+          answer: "Zachodniopomorskie, lubuskie, dolnośląskie, opolskie, warmińsko-mazurskie (częściowo pomorskie i śląskie)",
         },
         {
           text: "Jakie 3 organy brały udział w obradach okrągłego stołu? ",
           id: "43",
+          answer: "Władze PRL, opozycja demokratyczna (Solidarność), Kościół",
         },
         {
           text: "Jaki był powód zamieszek w czerwcu 1976 w Radomiu?",
           id: "44",
+          answer: "Podwyżki cen żywności",
         },
         {
           text: "Jakie zadanie miały sowieckie brygady trofiejne?",
           id: "45",
+          answer: "Grabież dóbr: wywóz do ZSRR maszyn, fabryk, surowców, dzieł sztuki",
         },
       ],
     },
@@ -1130,22 +1270,27 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Jak pije się Tequile? ",
           id: "51",
+          answer: "Liże się sól, pije shota, zagryza limonką",
         },
         {
           text: "Jaki alkohol pija James Bond?",
           id: "52",
+          answer: "Martini z wódką (wstrząśnięte, nie zmieszane)",
         },
         {
           text: "Jaki alkohol piją Grecy podczas stypy?",
           id: "53",
+          answer: "Metaxa (koniak/brandy)",
         },
         {
           text: "Jak nazwiemy wzmacniane wino z winogron zbieranych w dole reki Douro?",
           id: "54",
+          answer: "Porto",
         },
         {
           text: "Czym jest kusztyk/kulawka?",
           id: "55",
+          answer: "Kieliszek bez stopki (nie da się go odstawić, trzeba wypić)",
         },
       ],
     },
@@ -1159,22 +1304,27 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Jaka postać została zakazana z powodu żartów z prezydenta Chin, Xi Jinpinga?",
           id: "31",
+          answer: "Kubuś Puchatek",
         },
         {
           text: "Który prezydent ożenił się ze swoją 24 lata starszą nauczycielką z liceum jezuickiego?",
           id: "32",
+          answer: "Emmanuel Macron",
         },
         {
           text: "Jaką funkcję pełnił Władmir Putin przez pierwsze 15 lat swojej pracy?",
           id: "33",
+          answer: "Oficer KGB",
         },
         {
           text: "W 2018 roku następca tronu pewnego kraju zlecił morderstwo dziennikarza w konsulacie teog kraju na terenie turcji. O jakim kraju mowa?",
           id: "34",
+          answer: "Arabia Saudyjska",
         },
         {
           text: "Dwaj bracia, rządzący egzotycznym krajem jeden po drugim. O jakim kraju mowa?",
           id: "35",
+          answer: "Kuba (Fidel i Raúl Castro)",
         },
       ],
     },
@@ -1186,22 +1336,27 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Do którego świętego modlimy się w sprawie rzeczy zagubionych ?",
           id: "71",
+          answer: "Św. Antoni (z Padwy)",
         },
         {
           text: "Jak nazywa się święty będący patronem zwierząt ?",
           id: "72",
+          answer: "Św. Franciszek z Asyżu",
         },
         {
           text: "Jakie now święto powstało dzięki św. Faustynie Kowalskiej?",
           id: "73",
+          answer: "Święto (Niedziela) Miłosierdzia Bożego",
         },
         {
           text: "Do jakiego zakonu należał św. Maksymilian Kolbe?",
           id: "74",
+          answer: "Franciszkanów (konwentualnych)",
         },
         {
           text: "Jak nazywa się patron strażaków?",
           id: "75",
+          answer: "Św. Florian",
         },
       ],
     },
@@ -1213,32 +1368,32 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Znajdziemy to w łazience.",
           id: "81",
-          imageUrl:
-            "https://www.rd.com/wp-content/uploads/2020/08/GettyImages-482182375-e1598625695364.jpg?w=2000",
+          answer: "Szczoteczka (do zębów)",
+          imageUrl: "/questions/final-mikroskop-81.jpg",
         },
         {
           text: "Znajdziemy to w kuchni.",
           id: "82",
-          imageUrl:
-            "https://www.rd.com/wp-content/uploads/2020/08/GettyImages-180405032-e1598625032200.jpg?w=2000",
+          answer: "Sól",
+          imageUrl: "/questions/final-mikroskop-82.jpg",
         },
         {
           text: "Znajdziemy to w garderobie/ganku.",
           id: "83",
-          imageUrl:
-            "https://blazepress.com/.image/MTI5MjUyOTA5MjgzMTQzNjUw/everyday-items-under-microscope-3jpg.jpg",
+          answer: "Rzepy (zapięcie na rzep)",
+          imageUrl: "/questions/final-mikroskop-83.jpg",
         },
         {
           text: "Znajdziemy to w sypialni.",
           id: "84",
-          imageUrl:
-            "https://homeairadvisor.com/wp-content/uploads/2019/09/Picture-of-Dust-Mites.jpg",
+          answer: "Roztocza kurzu",
+          imageUrl: "/questions/final-mikroskop-84.jpg",
         },
         {
           text: "Znajdziey to w salonie.",
           id: "85",
-          imageUrl:
-            "https://www.rd.com/wp-content/uploads/2020/08/GettyImages-482183247-e1598625935432.jpg?w=2000",
+          answer: "Płyta winylowa",
+          imageUrl: "/questions/final-mikroskop-85.jpg",
         },
       ],
     },
@@ -1287,22 +1442,27 @@ export const finalGameSetupBase: IGameSetupBase = {
         {
           text: "Jakim trunkiem raczą się bogowie Olimpijscy?",
           id: "101",
+          answer: "Nektarem (ambrozja to pokarm)",
         },
         {
           text: "Jak nazywa się rzymski odpowiednik Dionizosa?",
           id: "102",
+          answer: "Bachus",
         },
         {
           text: "Z jakimi mitycznymi/legendarnymi postaciami związany jest Złoty Graal?",
           id: "103",
+          answer: "Z królem Arturem i rycerzami Okrągłego Stołu (kielich z Ostatniej Wieczerzy)",
         },
         {
           text: "Jak nazywał się wesoły mnich, lubujący się w piwie i miodzie pitnym, współtowarzysz Robin Hooda?",
           id: "104",
+          answer: "Brat (Braciszek) Tuck",
         },
         {
           text: "Jak nazywała się żona Dionizosa?",
           id: "105",
+          answer: "Ariadna",
         },
       ],
     },

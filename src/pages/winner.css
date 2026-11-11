@@ -1,22 +1,71 @@
-.winnerContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.winnerLabel {
+  font-size: 20px;
+  animation: fadeUp 0.7s var(--ease-out) both;
+}
 
-    width: 100vw;
-    height: 100vh;
-    background-color: #459e4b;
-    color: #eff9ff;
+.winnerPortrait {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(260px, 29vw, 400px);
+  aspect-ratio: 1;
+  margin: 1vh 0;
+  animation: popIn 0.9s var(--ease-spring) 0.15s both;
+}
+.winnerPortrait > * {
+  grid-area: 1 / 1;
+}
+.winnerAvatar {
+  box-shadow: 0 0 0 4px var(--gold-400), 0 20px 40px -10px rgba(0, 0, 0, 0.7);
+}
+.winnerWreath {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.45));
+  animation: sway 5s ease-in-out infinite alternate;
+}
+.winnerRays {
+  position: absolute;
+  left: -45%;
+  top: -45%;
+  width: 190%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    rgba(233, 196, 106, 0.16) 0deg 7deg,
+    transparent 7deg 20deg
+  );
+  -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent 78%);
+  mask-image: radial-gradient(closest-side, #000 30%, transparent 78%);
+  animation: raysSpin 60s linear infinite;
 }
 
 .winnerHeader {
-    font-size: 48px;
-    font-weight: bold;
-    margin-bottom: 40px;
+  font-size: clamp(56px, 7.5vw, 124px);
+  font-weight: 800;
+  padding-bottom: 0.08em;
+  animation: fadeUp 0.8s var(--ease-out) 0.45s both;
 }
 
-.winnerCurrency {
-    font-size: 48px;
-    margin-left: 10px;
+.winnerScore {
+  font-size: clamp(22px, 2.2vw, 34px);
+  color: var(--cream-dim);
+  margin: 8px 0 5vh;
+  animation: fadeUp 0.8s var(--ease-out) 0.6s both;
+}
+.winnerScore b {
+  font-family: var(--font-display);
+  color: var(--cream);
+  font-size: 1.25em;
+}
+
+.winnerContainer .backButton {
+  animation: fadeUp 0.8s var(--ease-out) 0.8s both;
+}
+
+@keyframes raysSpin {
+  to { transform: rotate(360deg); }
+}
+.winnerWreath {
+  overflow: visible;
 }

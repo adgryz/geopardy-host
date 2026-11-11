@@ -1,16 +1,24 @@
 .questionIcon {
-    margin-left: 70px;
-    margin-top: 40px;
+  margin-left: 70px;
+  margin-top: 40px;
 }
 
 .iconBackground {
-    position: fixed;
-    z-index: 2;
-    opacity: 0.07;
+  position: fixed;
+  z-index: 1;
+  opacity: 0.045;
+  color: var(--cream);
+  pointer-events: none;
+  animation: iconsDrift 40s ease-in-out infinite alternate;
 }
 
 .iconsRow {
-    margin-top: -100px;
-    margin-bottom: 50px;
-    width: 900000px;
-}  
+  margin-top: -100px;
+  margin-bottom: 50px;
+  width: 900000px;
+}
+
+@keyframes iconsDrift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-90px, -30px, 0); }
+}

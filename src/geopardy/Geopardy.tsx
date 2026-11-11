@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import { CSSProperties, useContext } from "react";
 
 import { AppContext } from "../services/SocketProvider";
+import { Scenery } from "../festive/Scenery";
 import { Players } from "./components/Players";
 import { QuestionsList } from "./components/QuestionsList";
 
@@ -8,24 +9,35 @@ import "./geopardy.css";
 
 export const Geopardy = () => {
   const { game, roundNumber } = useContext(AppContext);
+  const groups =
+    roundNumber === 1 ? game.firstQuestionsGroup : game.secondQuestionsGroup;
 
   return (
-    <div className="geopardy">
-      <Players />
-      <div className="questionsBoard">
-        {roundNumber === 1
-          ? game.firstQuestionsGroup.map((group) => (
-              <div key={group.groupName} className="fullQuestionColumn">
-                <div className="groupName">{group.groupName}</div>
-                <QuestionsList questions={group.questions} />
+    <div className="stage geopardy">
+      <Scenery hills={false} flakes={26} />
+      <div className="geopardyContent">
+        <div className="geopardyTopBar">
+          <div className="roundBadge">
+            <span className="eyebrow">Runda</span>
+            <span className="display goldText">{roundNumber}</span>
+          </div>
+          <Players />
+        </div>
+        {/* key = runda: nowa plansza wjeżdża od nowa */}
+        <div className="questionsBoard" key={roundNumber}>
+          {groups.map((group, index) => (
+            <div
+              key={group.groupName}
+              className="fullQuestionColumn"
+              style={{ "--col": index } as CSSProperties}
+            >
+              <div className="groupName">
+                <span>{group.groupName}</span>
               </div>
-            ))
-          : game.secondQuestionsGroup.map((group) => (
-              <div key={group.groupName} className="fullQuestionColumn">
-                <div className="groupName">{group.groupName}</div>
-                <QuestionsList questions={group.questions} />
-              </div>
-            ))}
+              <QuestionsList questions={group.questions} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

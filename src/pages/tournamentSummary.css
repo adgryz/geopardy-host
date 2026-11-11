@@ -1,75 +1,122 @@
 .tournamentSummaryContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    width: 100vw;
-    height: 100vh;
-
-    font-size: 24px;
-
-    background-color: #9e6ec3;
-    color:  #eff9ff;
+  padding: 4vh 0;
 }
 
 .tournamentSummaryContentContainer {
-    position: fixed;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: min(1500px, 94vw);
+  gap: 3.5vh;
 }
 
 .qualifyContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .qualifyHeader {
-    margin-bottom: 20px;
-    font-weight: bold;
-    font-size: 48px;
-}
-
-.gameHeader {
-    font-weight: bold;
-    font-size: 30px;
+  font-size: clamp(36px, 4vw, 60px);
+  margin-bottom: 3vh;
+  animation: fadeUp 0.7s var(--ease-out) both;
 }
 
 .qualifyGamesContainer {
-    display: flex;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
 }
 
 .singleGameOverviewContainer {
-    margin-right: 40px;
-    margin-bottom: 40px;
+  min-width: 320px;
+  padding: 22px 28px 14px;
+  text-align: left;
+  animation: fadeUp 0.7s var(--ease-out) both;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+.qualifyGamesContainer .singleGameOverviewContainer:nth-child(2) { animation-delay: 0.08s; }
+.qualifyGamesContainer .singleGameOverviewContainer:nth-child(3) { animation-delay: 0.16s; }
+.qualifyGamesContainer .singleGameOverviewContainer:nth-child(4) { animation-delay: 0.24s; }
+
+.singleGameOverviewContainer.isCurrent {
+  border-color: rgba(233, 196, 106, 0.75);
+  box-shadow: 0 0 0 1px rgba(233, 196, 106, 0.35),
+    0 0 46px -8px rgba(233, 196, 106, 0.45),
+    0 24px 50px -24px rgba(0, 0, 0, 0.7);
+}
+
+.gameHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--frost-line);
 }
 
 .singleGameOverviewPlayer {
-    display: flex;
-    align-items: center;
-    margin: 20px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 0;
+}
+.singleGameOverviewPlayer + .singleGameOverviewPlayer {
+  border-top: 1px dashed rgba(247, 240, 227, 0.09);
 }
 
-.singleGameOverviewPlayerImg {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 20px;
+.singleGameOverviewPlayerName {
+  flex: 1;
+  font-size: 26px;
+  font-weight: 700;
 }
 
-.singleGameOverviewPlayerText {
-    font-size: 30px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
+.singleGameOverviewPlayerScore {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gold-200);
+  margin-left: 24px;
+  white-space: nowrap;
 }
 
-.summaryPlayerCurrency {
-    font-size: 30px;
-    margin-left: 10px;
+/* finał */
+.singleGameOverviewContainer.isFinalGame {
+  animation-delay: 0.3s;
+  background: linear-gradient(180deg, rgba(233, 196, 106, 0.13), rgba(233, 196, 106, 0.03));
+  border-color: rgba(233, 196, 106, 0.4);
+}
+.isFinalGame .gameHeader {
+  justify-content: center;
+  color: var(--gold-200);
+  border-bottom-color: rgba(233, 196, 106, 0.3);
+}
+.gameHeaderStar {
+  width: 14px;
+  height: 14px;
+  color: var(--gold-400);
+  animation: twinkle 2.8s ease-in-out infinite;
+}
+.gameHeaderStar:last-child {
+  animation-delay: -1.4s;
+}
+.isFinalGame .singleGameOverviewPlayers {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  min-width: 480px;
+}
+.isFinalGame .singleGameOverviewPlayer {
+  border: 0;
+  animation: popIn 0.5s var(--ease-spring) both;
+}
+.singleGameOverviewEmpty {
+  padding: 22px 0 16px;
+  color: var(--cream-dim);
+  font-style: italic;
+  font-family: var(--font-display);
+  font-size: 20px;
 }

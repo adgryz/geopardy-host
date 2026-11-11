@@ -2,26 +2,67 @@ import { useState, ReactNode, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 
-import { Game, IGameSetup, Player, FinalQuestionInfo } from "./geopardyTypes";
+import {
+  Game,
+  IGameSetup,
+  Player,
+  FinalQuestionInfo,
+  FinalQuestionPhase,
+  HostState,
+} from "./geopardyTypes";
 import { firstGameSetup, tournamentSetup } from "./gameSetup";
 import { getUseSocket } from "./useSocket";
+import { useImagePreload } from "./useImagePreload";
+
+import "./connection.css";
 
 const isDev = process.env.NODE_ENV === "development";
-const serverAddress = isDev
-  ? "http://localhost:3123"
-  : "https://geopargygame.herokuapp.com/";
-const socket = io(serverAddress);
+const serverAddress =
+  process.env.REACT_APP_SERVER_URL ||
+  (isDev ? "http://localhost:3123" : "https://geopargygame.herokuapp.com/");
+const socket = io(serverAddress, {
+  // come back quickly after a short network hiccup
+  reconnectionDelay: 500,
+  reconnectionDelayMax: 3000,
+});
 
 const useSocket = getUseSocket(socket);
+
+// The id of the tournament is kept in localStorage – after a reload (or
+// closing the tab by accident) the host comes back to the same tournament.
+const HOST_SESSION_KEY = "geopardy.host.session";
+const loadHostTournamentId = (): string | null => {
+  try {
+    return (
+      JSON.parse(localStorage.getItem(HOST_SESSION_KEY) || "null")
+        ?.tournamentId ?? null
+    );
+  } catch {
+    return null;
+  }
+};
+const saveHostTournamentId = (tournamentId: string | null) => {
+  try {
+    if (tournamentId) {
+      localStorage.setItem(HOST_SESSION_KEY, JSON.stringify({ tournamentId }));
+    } else {
+      localStorage.removeItem(HOST_SESSION_KEY);
+    }
+  } catch {}
+};
 
 const CONNECT = "connect";
 const DISCONNECT = "disconnect";
 
 //tournament
 const SEND_CREATE_TOURNAMENT = "sendCreateTournament";
+const RECONNECT_HOST = "reconnectHost";
+const RETURN_HOST_STATE = "returnHostState";
 const RETURN_NEW_TOURNAMENT = "returnNewTournament";
 const RETURN_NEW_PLAYERS = "returnNewPlayers";
+const RETURN_CONNECTED_PLAYERS = "returnConnectedPlayers";
 const SEND_START_TOURNAMENT = "sendStartTournament";
+const SEND_REMOVE_PLAYER = "sendRemovePlayer";
 const RETURN_START_TOURNAMENT = "returnStartTournament";
 
 //games
@@ -36,21 +77,63 @@ const RETURN_UPDATED_FINAL_GAME = "returnUpdatedFinalGame";
 const RETURN_NEXT_GAME_IS_FINAL = "returnNextGameIsFinal";
 
 //questions
+const SEND_OPEN_QUESTION = "sendOpenQuestion";
 const SEND_START_QUESTION = "sendStartQuestion";
-const SEND_NEW_PLAYER_SCORE = "sendNewPlayerScore";
-const SEND_PLAYER_ANSWERED_WRONGLY = "sendPlayerAnsweredWrongly";
+const SEND_ANSWER_JUDGED = "sendAnswerJudged";
 const SEND_NO_ANSWER = "sendNoAnswer";
 const RETURN_ANSWER_QUESTION = "returnAnswerQuestion";
-const RETURN_ANSWER_QUESTION_END = "returnAnswerQuestionEnd";
+const RETURN_SCORES = "returnScores";
 
 //finalQuestion
 const SEND_START_FINAL_QUESTION = "sendStartFinalQuestion";
-const RETURN_ALL_BETS_SENT = "returnAllBetsSent";
+const RETURN_BETS_STATUS = "returnBetsStatus";
 const SEND_SHOW_FINAL_QUESTION = "sendShowFinalQuestion";
 const SEND_FINAL_QUESTION_TIME_OUT = "sendFinalQuestionTimeOut";
 const RETURN_FINAL_QUESTION_ANSWERS = "returnFinalQuestionAnswers";
 const SEND_CORRECT_FINAL_ANSWER = "sendCorrectFinalAnswer";
 const SEND_INCORRECT_FINAL_ANSWER = "sendIncorrectFinalAnswer";
+
+const EMPTY_FINAL_GAME: Game = {
+  gameId: "finalGame",
+  players: [],
+  isStarted: false,
+  finalQuestionInfos: {},
+};
+
+type QuestionsGroups = IGameSetup["firstQuestionsGroup"];
+const areAllQuestionsAnswered = (groups: QuestionsGroups) =>
+  groups
+    .flatMap((questionsGroup) => questionsGroup.questions)
+    .every((question) => question.isAnswered);
+
+// Ids of questions can repeat between rounds, so the server gets "round-id"
+const toServerQuestionId = (roundNumber: 1 | 2, questionId: string) =>
+  `${roundNumber}-${questionId}`;
+const fromServerQuestionId = (serverQuestionId: string) => {
+  const separatorIndex = serverQuestionId.indexOf("-");
+  return {
+    roundNumber: (serverQuestionId.slice(0, separatorIndex) === "2" ? 2 : 1) as
+      | 1
+      | 2,
+    id: serverQuestionId.slice(separatorIndex + 1),
+  };
+};
+
+// Board of a game with questions already played marked as answered
+const getBoard = (setup: IGameSetup, answeredQuestionIds: string[]) => {
+  const board: IGameSetup = JSON.parse(JSON.stringify(setup));
+  const markAnswered = (groups: QuestionsGroups, roundNumber: 1 | 2) =>
+    groups.forEach((questionsGroup) =>
+      questionsGroup.questions.forEach((question) => {
+        question.isAnswered = answeredQuestionIds.includes(
+          toServerQuestionId(roundNumber, question.id)
+        );
+      })
+    );
+  markAnswered(board.firstQuestionsGroup, 1);
+  markAnswered(board.secondQuestionsGroup, 2);
+  return board;
+};
 
 interface ISocketProviderProps {
   children: ReactNode;
@@ -60,14 +143,19 @@ interface AppData {
   isConnected: boolean;
 
   tournamentId?: string;
+  // tournament that is still running on the server (can be resumed)
+  activeTournamentId: string | null;
+  resumeTournament: () => void;
   playersCountToStartTheTournament?: number;
   players: Player[];
+  connectedPlayerIds: string[];
   games: Record<string, Game>;
   sendCreateTournament: () => void;
   sendStartTournament: () => void;
+  removePlayer: (playerId: string) => void;
 
   sendStartGame: () => void;
-  sendProceedToTheNextGame: ({ winnerId }: { winnerId: string }) => void;
+  sendProceedToTheNextGame: ({ winnerId }: { winnerId?: string }) => void;
 
   sendStartQuestion: () => void;
 
@@ -85,9 +173,15 @@ interface AppData {
   sendCorrectFinalAnswer: (playerId: string) => void;
   sendIncorrectFinalAnswer: (playerId: string) => void;
   changePlayersScore: (playerId: string, difference: number) => void;
+  finalQuestionPhase: FinalQuestionPhase | null;
+  finalQuestionElapsedMs: number | null;
+  finalQuestionInfos: Record<string, FinalQuestionInfo>;
+  betsCount: number;
 
   roundNumber: 1 | 2;
   currentQuestionPoints: number;
+  activeQuestion: { id: string; isStarted: boolean } | null;
+  answeringPlayerId?: string;
   answeringPlayerName?: string;
   allBetsSent: boolean;
   setQuestionStarted: (questionId: string) => void;
@@ -101,10 +195,14 @@ interface AppData {
 export const AppContext = createContext<AppData>({
   isConnected: false,
 
+  activeTournamentId: null,
+  resumeTournament: () => {},
   sendCreateTournament: () => {},
   sendStartTournament: () => {},
+  removePlayer: () => {},
 
   players: [],
+  connectedPlayerIds: [],
   games: {},
 
   sendStartGame: () => {},
@@ -117,13 +215,9 @@ export const AppContext = createContext<AppData>({
   currentGamePlayers: [],
   roundNumber: 1,
   currentQuestionPoints: 0,
+  activeQuestion: null,
 
-  finalGame: {
-    isStarted: false,
-    players: [],
-    gameId: "",
-    finalQuestionInfos: {},
-  },
+  finalGame: EMPTY_FINAL_GAME,
   isFinal: false,
 
   sendShowFinalQuestion: () => {},
@@ -131,6 +225,10 @@ export const AppContext = createContext<AppData>({
   sendCorrectFinalAnswer: () => {},
   sendIncorrectFinalAnswer: () => {},
   changePlayersScore: () => {},
+  finalQuestionPhase: null,
+  finalQuestionElapsedMs: null,
+  finalQuestionInfos: {},
+  betsCount: 0,
 
   allBetsSent: false,
   setQuestionStarted: () => {},
@@ -145,6 +243,11 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   const navigate = useNavigate();
 
   const [isConnected, setIsConnected] = useState(socket.connected);
+  // With a saved tournament we wait for the server before showing anything
+  const [isRestoring, setIsRestoring] = useState(!!loadHostTournamentId());
+  const [activeTournamentId, setActiveTournamentId] = useState<string | null>(
+    null
+  );
   const [
     playersCountToStartTheTournament,
     setPlayersCountToStartTheTournament,
@@ -156,21 +259,28 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   const [tournamentId, setTournamentId] = useState<string | undefined>();
 
   const [game, setGame] = useState<IGameSetup>(firstGameSetup);
-  const [secondRoundFinished, setSecondRoundFinished] = useState(false);
-  const [gameFinished, setGameFinished] = useState(false);
   const [roundNumber, setRoundNumber] = useState<1 | 2>(1);
   const [currentQuestionPoints, setCurrentQuestionPoints] = useState<number>(0);
+  const [activeQuestion, setActiveQuestion] = useState<{
+    id: string;
+    isStarted: boolean;
+  } | null>(null);
   const [players, setPlayers] = useState<Player[]>([]);
+  const [connectedPlayerIds, setConnectedPlayerIds] = useState<string[]>([]);
   const [currentGamePlayers, setCurrentGamePlayers] = useState<Player[]>([]);
   const [games, setGames] = useState<Record<string, Game>>({});
-  const [finalGame, setFinalGame] = useState<Game>({
-    gameId: "finalGame",
-    players: [],
-    isStarted: false,
-    finalQuestionInfos: {},
-  });
+  const [finalGame, setFinalGame] = useState<Game>(EMPTY_FINAL_GAME);
   const [isFinal, setIsFinal] = useState(false);
   const [allBetsSent, setAllBetsSent] = useState(false);
+  const [betsCount, setBetsCount] = useState(0);
+  const [finalQuestionPhase, setFinalQuestionPhase] =
+    useState<FinalQuestionPhase | null>(null);
+  const [finalQuestionElapsedMs, setFinalQuestionElapsedMs] = useState<
+    number | null
+  >(null);
+  const [finalQuestionInfos, setFinalQuestionInfos] = useState<
+    Record<string, FinalQuestionInfo>
+  >({});
 
   const [answeringPlayerId, setAnsweringPlayerId] =
     useState<string | undefined>();
@@ -178,6 +288,9 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     useState<string | undefined>();
 
   // Effects
+  // Obrazki pytań ładujemy w tle od razu, żeby wejście w pytanie było płynne.
+  useImagePreload(game);
+
   useEffect(() => {
     const newName = answeringPlayerId
       ? currentGamePlayers.find((player) => player.id === answeringPlayerId)
@@ -186,40 +299,140 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     setAnsweringPlayerName(newName);
   }, [answeringPlayerId, currentGamePlayers]);
 
+  // The socket may already be connected before the handlers are registered
   useEffect(() => {
-    if (!currentGameIndex && currentGameIndex !== 0) {
-      return;
+    if (socket.connected) {
+      socket.emit(RECONNECT_HOST, { tournamentId: loadHostTournamentId() });
     }
-    setGame(tournamentSetup.gamesSetups[currentGameIndex]);
-    setCurrentGamePlayers(Object.values(games)[currentGameIndex].players);
-    console.log("currentGameIndex", currentGameIndex, "setCurrentGamePlayers");
-  }, [currentGameIndex]);
-
-  useEffect(() => {
-    if (secondRoundFinished) {
-      sendStartFinalQuestion();
-      navigate("/finalQuestion");
-    }
-  }, [secondRoundFinished]);
-
-  useEffect(() => {
-    if (gameFinished) {
-      navigate("/winner");
-    }
-  }, [gameFinished]);
+  }, []);
 
   // State handlers
 
-  const handleQuestionFinished = () => {
-    if (roundNumber === 1) {
-      checkIfFirstRoundFinished(game);
-    }
-    console.log(roundNumber, "handleQuestionFinished");
-    console.log(game, "game");
-    if (roundNumber === 2) {
-      checkIfSecondRoundFinished(game);
+  const resetGameState = () => {
+    setRoundNumber(1);
+    setActiveQuestion(null);
+    setAnsweringPlayerId(undefined);
+    setAllBetsSent(false);
+    setBetsCount(0);
+    setFinalQuestionPhase(null);
+    setFinalQuestionElapsedMs(null);
+    setFinalQuestionInfos({});
+  };
+
+  const resetTournamentState = () => {
+    resetGameState();
+    setTournamentId(undefined);
+    setPlayers([]);
+    setGames({});
+    setFinalGame(EMPTY_FINAL_GAME);
+    setIsFinal(false);
+    setGameId(undefined);
+    setCurrentGameIndex(undefined);
+    setCurrentGamePlayers([]);
+    setGame(firstGameSetup);
+  };
+
+  // Rebuilds the whole host screen from the server snapshot
+  const applyHostState = (state: HostState) => {
+    saveHostTournamentId(state.tournamentId);
+    setActiveTournamentId(state.tournamentId);
+    setTournamentId(state.tournamentId);
+    setPlayersCountToStartTheTournament(state.playersCount);
+    setPlayers(state.players);
+    setConnectedPlayerIds(state.connectedPlayerIds);
+    setGames(state.games);
+    setFinalGame(state.finalGame);
+    setIsFinal(state.isFinal);
+    setCurrentGameIndex(state.currentGameIndex ?? undefined);
+
+    const activeGame = state.isFinal
+      ? state.finalGame
+      : state.currentGameId
+      ? state.games[state.currentGameId]
+      : undefined;
+    setGameId(activeGame?.gameId);
+
+    let targetPath = state.isStarted ? "/tournament" : "/lobby";
+
+    if (state.isStarted && activeGame) {
+      const setup = state.isFinal
+        ? tournamentSetup.finalGameSetup
+        : tournamentSetup.gamesSetups[state.currentGameIndex ?? 0];
+      const board = getBoard(setup, activeGame.answeredQuestionIds ?? []);
+      const serverQuestion = activeGame.question?.id
+        ? activeGame.question
+        : null;
+      const question = serverQuestion?.id
+        ? { ...serverQuestion, ...fromServerQuestionId(serverQuestion.id) }
+        : null;
+      const phase = activeGame.finalQuestionPhase ?? null;
+      const infos = activeGame.finalQuestionInfos ?? {};
+      setGame(board);
+      setRoundNumber(
+        question
+          ? question.roundNumber
+          : areAllQuestionsAnswered(board.firstQuestionsGroup)
+          ? 2
+          : 1
+      );
+      setCurrentGamePlayers(activeGame.players);
+      setAnsweringPlayerId(question?.answeringPlayerId ?? undefined);
+      setActiveQuestion(
+        question ? { id: question.id, isStarted: question.isStarted } : null
+      );
+      setFinalQuestionPhase(phase);
+      setFinalQuestionElapsedMs(state.finalQuestionElapsedMs);
+      setFinalQuestionInfos(infos);
+      setBetsCount(state.betsCount);
+      setAllBetsSent(state.betsCount >= activeGame.players.length);
+
+      const allFinalAnswersJudged =
+        phase === "timeUp" &&
+        activeGame.players.every(
+          (player) => infos[player.id]?.isCorrect !== undefined
+        );
+
+      if (!activeGame.isStarted) {
+        targetPath = "/tournament";
+      } else if (allFinalAnswersJudged) {
+        targetPath = "/winner";
+      } else if (phase) {
+        targetPath = "/finalQuestion";
+      } else if (question) {
+        targetPath = `/question/${question.id}`;
+      } else if (areAllQuestionsAnswered(board.secondQuestionsGroup)) {
+        socket.emit(SEND_START_FINAL_QUESTION, {
+          tournamentId: state.tournamentId,
+        });
+        setFinalQuestionPhase("betting");
+        targetPath = "/finalQuestion";
+      } else {
+        targetPath = "/game";
+      }
     }
 
+    if (window.location.pathname !== targetPath) {
+      navigate(targetPath, { replace: true });
+    }
+  };
+
+  const handleQuestionFinished = () => {
+    setActiveQuestion(null);
+    setAnsweringPlayerId(undefined);
+
+    if (roundNumber === 1) {
+      if (areAllQuestionsAnswered(game.firstQuestionsGroup)) {
+        setRoundNumber(2);
+      }
+      navigate("/game");
+      return;
+    }
+
+    if (areAllQuestionsAnswered(game.secondQuestionsGroup)) {
+      sendStartFinalQuestion();
+      navigate("/finalQuestion");
+      return;
+    }
     navigate("/game");
   };
   const setQuestionStarted = (questionId: string) => {
@@ -239,81 +452,103 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
 
     answeredQuestion.isAnswered = true;
     setGame(newGame);
+    setActiveQuestion({ id: questionId, isStarted: false });
+    setAnsweringPlayerId(undefined);
+    socket.emit(SEND_OPEN_QUESTION, {
+      tournamentId,
+      gameId,
+      questionId: toServerQuestionId(roundNumber, questionId),
+    });
     return newGame;
   };
-  const checkIfFirstRoundFinished = (game: IGameSetup) => {
-    const allFirstGroupQuestionsAnswered = game.firstQuestionsGroup
-      .flatMap((questionsGroup) => questionsGroup.questions)
-      .every((question) => question.isAnswered);
-    if (allFirstGroupQuestionsAnswered) {
-      setRoundNumber(2);
-    }
-  };
-  const checkIfSecondRoundFinished = (game: IGameSetup) => {
-    const allSecondGroupQuestionsAnswered = game.secondQuestionsGroup
-      .flatMap((questionsGroup) => questionsGroup.questions)
-      .every((question) => question.isAnswered);
-    if (allSecondGroupQuestionsAnswered) {
-      console.log("setSecondRoundFinished");
-      setSecondRoundFinished(true);
-    }
-  };
   const changePlayersScore = (playerId: string, difference: number) => {
-    setCurrentGamePlayers(
-      currentGamePlayers.map((player) =>
+    setCurrentGamePlayers((players) =>
+      players.map((player) =>
         player.id === playerId
-          ? { ...player, score: player.score + difference }
+          ? { ...player, score: player.score + (difference || 0) }
           : player
       )
     );
   };
-  const handleCorrectAnswer = () => {
+  // The server keeps the real score – it accepts a judgement only for the
+  // player that is answering, so a double click can't count points twice.
+  const judgeAnswer = (isCorrect: boolean) => {
     if (!answeringPlayerId) return;
-    const answeringPlayer = currentGamePlayers.find(
-      (player) => player.id === answeringPlayerId
-    );
-    if (!answeringPlayer) return;
-
-    changePlayersScore(answeringPlayerId, currentQuestionPoints);
-    sendNewPlayerScore({
+    changePlayersScore(
       answeringPlayerId,
-      newScore: answeringPlayer.score + currentQuestionPoints,
+      isCorrect ? currentQuestionPoints : -currentQuestionPoints
+    );
+    socket.emit(SEND_ANSWER_JUDGED, {
+      tournamentId,
+      gameId,
+      playerId: answeringPlayerId,
+      isCorrect,
+      points: currentQuestionPoints,
     });
     setAnsweringPlayerId(undefined);
   };
-  const handleWrongAnswer = () => {
-    if (!answeringPlayerId) return;
-    const answeringPlayer = currentGamePlayers.find(
-      (player) => player.id === answeringPlayerId
-    );
-    if (!answeringPlayer) return;
-
-    changePlayersScore(answeringPlayerId, -currentQuestionPoints);
-    sendNewPlayerScore({
-      answeringPlayerId,
-      newScore: answeringPlayer.score - currentQuestionPoints,
-    });
-    sendPlayerAnsweredWrongly({ playerId: answeringPlayerId });
-    setAnsweringPlayerId(undefined);
-  };
+  const handleCorrectAnswer = () => judgeAnswer(true);
+  const handleWrongAnswer = () => judgeAnswer(false);
   const handleNoAnswer = () => {
     sendNoAnswer();
   };
-  const finishGame = () => setGameFinished(true);
+  const finishGame = () => navigate("/winner");
 
   // Utils Setup
   useSocket(CONNECT, () => {
     setIsConnected(true);
+    // Join the tournament again – the server answers with the full state
+    socket.emit(RECONNECT_HOST, { tournamentId: loadHostTournamentId() });
   });
   useSocket(DISCONNECT, () => {
     setIsConnected(false);
+  });
+  useSocket(
+    RETURN_HOST_STATE,
+    ({
+      state,
+      activeTournamentId,
+    }: {
+      state: HostState | null;
+      activeTournamentId: string | null;
+    }) => {
+      setIsRestoring(false);
+      setActiveTournamentId(activeTournamentId);
+      if (state) {
+        applyHostState(state);
+        return;
+      }
+      // The tournament does not exist anymore (finished / server restarted)
+      saveHostTournamentId(null);
+      if (tournamentId) {
+        resetTournamentState();
+      }
+      if (window.location.pathname !== "/") {
+        navigate("/", { replace: true });
+      }
+    }
+  );
+  useSocket(RETURN_CONNECTED_PLAYERS, (playerIds: string[]) => {
+    setConnectedPlayerIds(playerIds);
   });
 
   // Socket senders
 
   // Tournament
   const sendCreateTournament = () => {
+    if (
+      activeTournamentId &&
+      !window.confirm(
+        "Trwa już turniej. Utworzenie nowego zakończy go dla wszystkich graczy. Kontynuować?"
+      )
+    ) {
+      return;
+    }
     socket.emit(SEND_CREATE_TOURNAMENT);
+  };
+  const resumeTournament = () => {
+    if (!activeTournamentId) return;
+    socket.emit(RECONNECT_HOST, { tournamentId: activeTournamentId });
   };
   // RETURN_NEW_TOURNAMENT
   useSocket(
@@ -325,14 +560,19 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
       tournamentId: string;
       playersCount: number;
     }) => {
+      resetTournamentState();
+      saveHostTournamentId(tournamentId);
+      setActiveTournamentId(tournamentId);
       setTournamentId(tournamentId);
       setPlayersCountToStartTheTournament(playersCount);
       navigate("/lobby");
     }
   );
   const sendStartTournament = () => {
-    console.log("Emit ", SEND_START_TOURNAMENT, { tournamentId });
     socket.emit(SEND_START_TOURNAMENT, { tournamentId });
+  };
+  const removePlayer = (playerId: string) => {
+    socket.emit(SEND_REMOVE_PLAYER, { tournamentId, playerId });
   };
   // RETURN_NEW_PLAYERS
   useSocket(RETURN_NEW_PLAYERS, (newPlayers: Player[]) => {
@@ -354,16 +594,19 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     ({
       currentGameId,
       currentGameIndex,
+      players,
     }: {
       currentGameId: string;
       currentGameIndex: number;
+      players?: Player[];
     }) => {
       setGameId(currentGameId);
       setCurrentGameIndex(currentGameIndex);
-      setRoundNumber(1);
-      setSecondRoundFinished(false);
-      setGameFinished(false);
-      setAllBetsSent(false);
+      setGame(tournamentSetup.gamesSetups[currentGameIndex] ?? firstGameSetup);
+      if (players) {
+        setCurrentGamePlayers(players);
+      }
+      resetGameState();
     }
   );
   // RETURN_START_GAME
@@ -371,30 +614,47 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   const sendStartGame = () => {
     socket.emit(SEND_START_GAME, { tournamentId, gameId });
   };
-  const sendProceedToTheNextGame = ({ winnerId }: { winnerId: string }) => {
-    socket.emit(SEND_PROCEED_TO_THE_NEXT_GAME, { tournamentId, winnerId });
+  const sendProceedToTheNextGame = ({ winnerId }: { winnerId?: string }) => {
+    socket.emit(SEND_PROCEED_TO_THE_NEXT_GAME, {
+      tournamentId,
+      gameId,
+      winnerId,
+    });
+    if (isFinal) {
+      // The tournament is over – nothing to come back to
+      saveHostTournamentId(null);
+      setActiveTournamentId(null);
+    }
   };
 
   // Question
   // RETURN_ANSWER_QUESTION
   useSocket(RETURN_ANSWER_QUESTION, ({ playerId }: { playerId: string }) => {
     setAnsweringPlayerId(playerId);
-    setCurrentGamePlayers(
-      currentGamePlayers.map((player) =>
-        player.id === playerId ? { ...player, isAnswering: true } : player
-      )
+    setCurrentGamePlayers((players) =>
+      players.map((player) => ({
+        ...player,
+        isAnswering: player.id === playerId,
+      }))
     );
   });
-  // RETURN_ANSWER_QUESTION_END
+  // RETURN_SCORES – scores kept by the server
   useSocket(
-    RETURN_ANSWER_QUESTION_END,
-    ({ playerId }: { playerId: string }) => {
-      console.log(RETURN_ANSWER_QUESTION_END, playerId);
-      setAnsweringPlayerId(undefined);
-      setCurrentGamePlayers(
-        currentGamePlayers.map((player) =>
-          player.id === playerId
-            ? { ...player, isAnswering: false, wasAlreadyAnswering: true }
+    RETURN_SCORES,
+    ({
+      gameId: scoresGameId,
+      scores,
+    }: {
+      gameId: string;
+      scores: Record<string, number>;
+    }) => {
+      if (gameId && scoresGameId !== gameId) {
+        return;
+      }
+      setCurrentGamePlayers((players) =>
+        players.map((player) =>
+          scores[player.id] !== undefined
+            ? { ...player, score: scores[player.id] }
             : player
         )
       );
@@ -402,27 +662,9 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   );
   const sendStartQuestion = () => {
     socket.emit(SEND_START_QUESTION, { gameId, tournamentId });
-  };
-  const sendNewPlayerScore = ({
-    answeringPlayerId,
-    newScore,
-  }: {
-    answeringPlayerId: string;
-    newScore: number;
-  }) => {
-    socket.emit(SEND_NEW_PLAYER_SCORE, {
-      tournamentId,
-      gameId,
-      answeringPlayerId,
-      newScore,
-    });
-  };
-  const sendPlayerAnsweredWrongly = ({ playerId }: { playerId: string }) => {
-    socket.emit(SEND_PLAYER_ANSWERED_WRONGLY, {
-      playerId,
-      gameId,
-      tournamentId,
-    });
+    setActiveQuestion((question) =>
+      question ? { ...question, isStarted: true } : question
+    );
   };
   const sendNoAnswer = () => {
     socket.emit(SEND_NO_ANSWER, { gameId, tournamentId });
@@ -431,15 +673,32 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   // Final Question
   const sendStartFinalQuestion = () => {
     socket.emit(SEND_START_FINAL_QUESTION, { gameId, tournamentId });
+    setFinalQuestionPhase("betting");
+    setFinalQuestionInfos({});
+    setBetsCount(0);
+    setAllBetsSent(false);
   };
-  useSocket(RETURN_ALL_BETS_SENT, () => {
-    setAllBetsSent(true);
-  });
+  useSocket(
+    RETURN_BETS_STATUS,
+    ({
+      betsCount,
+      allBetsSent,
+    }: {
+      betsCount: number;
+      allBetsSent: boolean;
+    }) => {
+      setBetsCount(betsCount);
+      setAllBetsSent(allBetsSent);
+    }
+  );
   const sendShowFinalQuestion = () => {
     socket.emit(SEND_SHOW_FINAL_QUESTION, { gameId, tournamentId });
+    setFinalQuestionPhase("answering");
+    setFinalQuestionElapsedMs(0);
   };
   const sendFinalQuestionTimeOut = () => {
     socket.emit(SEND_FINAL_QUESTION_TIME_OUT, { gameId, tournamentId });
+    setFinalQuestionPhase("timeUp");
   };
   useSocket(
     RETURN_FINAL_QUESTION_ANSWERS,
@@ -448,12 +707,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     }: {
       finalQuestionInfos: Record<string, FinalQuestionInfo>;
     }) => {
-      if (!gameId) {
-        return;
-      }
-      const gamesCopy: Record<string, Game> = JSON.parse(JSON.stringify(games));
-      gamesCopy[gameId].finalQuestionInfos = finalQuestionInfos;
-      setGames(gamesCopy);
+      setFinalQuestionInfos(finalQuestionInfos);
     }
   );
   const sendCorrectFinalAnswer = (playerId: string) => {
@@ -472,14 +726,12 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     setFinalGame(finalGame);
   });
   useSocket(RETURN_NEXT_GAME_IS_FINAL, ({ finalGame }: { finalGame: Game }) => {
+    setFinalGame(finalGame);
     setGame(tournamentSetup.finalGameSetup);
     setIsFinal(true);
-    setGameFinished(false);
-    setSecondRoundFinished(false);
-    setRoundNumber(1);
-    setAllBetsSent(false);
+    setGameId(finalGame.gameId);
+    resetGameState();
     setCurrentGamePlayers(finalGame.players);
-    console.log("setCurrentGamePlayers", finalGame.players);
   });
 
   return (
@@ -489,8 +741,12 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
 
         sendCreateTournament,
         sendStartTournament,
+        activeTournamentId,
+        resumeTournament,
+        removePlayer,
         tournamentId,
         players,
+        connectedPlayerIds,
         games,
         playersCountToStartTheTournament,
 
@@ -507,6 +763,10 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         sendCorrectFinalAnswer,
         sendIncorrectFinalAnswer,
         changePlayersScore,
+        finalQuestionPhase,
+        finalQuestionElapsedMs,
+        finalQuestionInfos,
+        betsCount,
 
         finalGame,
         isFinal,
@@ -515,6 +775,8 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         roundNumber,
         sendStartQuestion,
         currentQuestionPoints,
+        activeQuestion,
+        answeringPlayerId,
         answeringPlayerName,
         setQuestionStarted,
         handleQuestionFinished,
@@ -524,7 +786,19 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         setCurrentQuestionPoints,
       }}
     >
-      {children}
+      {isRestoring ? (
+        <div className="connectionRestoring">
+          <span className="loader" />
+          <span>Wznawianie turnieju…</span>
+        </div>
+      ) : (
+        children
+      )}
+      {!isConnected && !isRestoring && (
+        <div className="connectionBanner">
+          Brak połączenia z serwerem – łączę ponownie…
+        </div>
+      )}
     </AppContext.Provider>
   );
 };

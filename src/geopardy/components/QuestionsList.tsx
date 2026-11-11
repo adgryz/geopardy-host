@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGift } from "@fortawesome/free-solid-svg-icons";
+import { faGift, faSnowflake } from "@fortawesome/free-solid-svg-icons";
 
 import { AppContext } from "../../services/SocketProvider";
 import { IQuestionsList } from "../../services/geopardyTypes";
@@ -24,21 +24,21 @@ export const QuestionsList = ({ questions }: IQuestionsListProps) => {
   };
 
   return (
-    <div>
+    <div className="questionsList">
       {questions.map((question) => (
         <div
-          key={question.text}
+          key={question.id}
           className={`question ${
             question.isAnswered ? "questionAnswered" : ""
           }`}
           onClick={() => openQuestion(question.id, question.isAnswered)}
         >
           {question.isAnswered ? (
-            ""
+            <FontAwesomeIcon className="questionDone" icon={faSnowflake} />
           ) : (
             <div className="questionPoints">
               <div>{question.points}</div>
-              <FontAwesomeIcon className="currency" icon={faGift} />
+              <FontAwesomeIcon className="gift" icon={faGift} />
             </div>
           )}
         </div>

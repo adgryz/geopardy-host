@@ -1,37 +1,42 @@
 import { useContext } from "react";
 import { Button } from "@chakra-ui/react";
+import { faGift } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AppContext } from "../services/SocketProvider";
+import { Player } from "../services/geopardyTypes";
+import { Scenery } from "../festive/Scenery";
+import { Avatar, Sparkle } from "../festive/Decor";
 
 import "./tournamentSummary.css";
-import { Player } from "../services/geopardyTypes";
-import { IconsBackground } from "../geopardy/components/IconBackgrounds";
-import { faGift, faSnowman } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 export const TournamentSummary = () => {
   const { games, currentGameIndex, finalGame, isFinal, sendStartGame } =
     useContext(AppContext);
 
   return (
-    <div className="tournamentSummaryContainer">
-      <IconsBackground isFull icon={faSnowman} />
-      <div className="tournamentSummaryContentContainer">
+    <div className="stage tournamentSummaryContainer">
+      <Scenery />
+      <div className="stageContent tournamentSummaryContentContainer">
         <div className="qualifyContainer">
-          <div className="qualifyHeader">Gry kwalifikacyjne</div>
+          <div className="qualifyHeader display">Gry kwalifikacyjne</div>
           <div className="qualifyGamesContainer">
             {Object.values(games).map((game, index) => (
               <SingleGameOverview
                 key={game.gameId}
                 players={game.players}
                 index={index + 1}
+                isCurrent={!isFinal && index === currentGameIndex}
               />
             ))}
           </div>
         </div>
 
-        <div>
-          <SingleGameOverview players={finalGame.players} isFinalGame />
-        </div>
+        <SingleGameOverview
+          players={finalGame.players}
+          isFinalGame
+          isCurrent={isFinal}
+        />
 
         {isFinal ? (
           <Button colorScheme="primary" size="lg" onClick={sendStartGame}>
@@ -50,6 +55,7 @@ export const TournamentSummary = () => {
 
 type ISingleGameOverviewProps = {
   players: Player[];
+  isCurrent?: boolean;
 } & (
   | { isFinalGame: boolean; index?: never }
   | { isFinalGame?: never; index: number }
@@ -59,33 +65,38 @@ const SingleGameOverview = ({
   players,
   index,
   isFinalGame,
+  isCurrent,
 }: ISingleGameOverviewProps) => {
   return (
-    <div className="singleGameOverviewContainer">
+    <div
+      className={`panel singleGameOverviewContainer ${
+        isFinalGame ? "isFinalGame" : ""
+      } ${isCurrent ? "isCurrent" : ""}`}
+    >
       <div className="gameHeader">
-        {isFinalGame ? "Gra Finałowa" : `Gra kwalifkacyjna numer ${index}`}
+        {isFinalGame && <Sparkle className="gameHeaderStar" />}
+        {isFinalGame ? "Gra Finałowa" : `Gra kwalifikacyjna numer ${index}`}
+        {isFinalGame && <Sparkle className="gameHeaderStar" />}
       </div>
-      {players.map((player) => (
-        <div className="singleGameOverviewPlayer" key={player.id}>
-          <img
-            className="singleGameOverviewPlayerImg"
-            src={player.base64Photo}
-            alt="avatar"
-          />
-          {}
-          <div className="singleGameOverviewPlayerText">
-            <span>
-              {isFinalGame ? player.name : `${player.name}: ${player.score}`}
-            </span>
+      <div className="singleGameOverviewPlayers">
+        {players.map((player) => (
+          <div className="singleGameOverviewPlayer" key={player.id}>
+            <Avatar src={player.base64Photo} name={player.name} size={64} />
+            <div className="singleGameOverviewPlayerName">{player.name}</div>
             {!isFinalGame && (
-              <FontAwesomeIcon
-                className="summaryPlayerCurrency"
-                icon={faGift}
-              />
+              <div className="singleGameOverviewPlayerScore">
+                {player.score}
+                <FontAwesomeIcon className="gift" icon={faGift} />
+              </div>
             )}
           </div>
-        </div>
-      ))}
+        ))}
+        {isFinalGame && !players.length && (
+          <div className="singleGameOverviewEmpty">
+            Zwycięzcy kwalifikacji trafią tutaj
+          </div>
+        )}
+      </div>
     </div>
   );
 };

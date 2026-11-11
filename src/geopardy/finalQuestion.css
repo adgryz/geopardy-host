@@ -1,119 +1,207 @@
-.finalQuestionContainer {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #eff9ff;
-    background-color: #357ecf;
-}
-
 .finalQuestionContentContainer {
-    position: fixed;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+  width: min(1500px, 92vw);
 }
 
+/* --- zapowiedź kategorii --- */
+.finalQuestionStar {
+  width: 54px;
+  height: 54px;
+  color: var(--gold-400);
+  margin-bottom: 18px;
+  filter: drop-shadow(0 0 16px rgba(233, 196, 106, 0.7));
+  animation: twinkle 3s ease-in-out infinite;
+}
 .finalQuestionCategoryHeader {
-    font-size: 32px;
+  font-size: 20px;
+  animation: fadeUp 0.7s var(--ease-out) both;
 }
-
 .finalQuestionCategory {
-    font-size: 80px;
-    font-weight: bold;
+  font-size: clamp(72px, 10vw, 170px);
+  font-style: italic;
+  font-weight: 800;
+  padding: 0 0.1em 0.1em;
+  animation: fadeUp 0.9s var(--ease-out) 0.15s both;
+}
+.finalQuestionPlayButton {
+  margin-top: 4vh;
+}
+.finalQuestionWaiting {
+  margin-top: 3vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 16px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
 }
 
+/* --- pytanie + zegar --- */
 .finalQuestionText {
-    font-weight: bold;
-    font-size: 80px;
+  font-size: clamp(40px, 4.8vw, 84px);
+  line-height: 1.12;
+  text-wrap: balance;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.3), 0 20px 40px rgba(0, 0, 0, 0.4);
+  animation: questionIn 0.8s var(--ease-out) both;
 }
 
 .finalQuestionTimeLeft {
-    font-size: 32px;
-    font-weight: bold;
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin-top: 6vh;
+  display: grid;
+  place-items: center;
+}
+.finalQuestionTimeLeft svg {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+.finalQuestionTimeLeft circle {
+  fill: none;
+  stroke-width: 7;
+}
+.timerTrack {
+  stroke: var(--frost-line);
+}
+.timerBar {
+  stroke: var(--gold-400);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear, stroke 0.4s;
+  filter: drop-shadow(0 0 8px rgba(233, 196, 106, 0.6));
+}
+.finalQuestionTimeLeft span {
+  font-size: 58px;
+  color: var(--gold-200);
+  animation: tick 1s var(--ease-out);
+}
+.finalQuestionTimeLeft.isEnding .timerBar {
+  stroke: var(--cranberry-400);
+  filter: drop-shadow(0 0 8px rgba(208, 67, 79, 0.8));
+}
+.finalQuestionTimeLeft.isEnding span {
+  color: #f6a4a8;
 }
 
-.finalQuestionPlayButton {
-    font-size: 100px;
-    cursor: pointer;
-    padding: 5px;
-    margin: 30px;
-    color: #eff9ff;
-}
-
+/* --- odsłanianie odpowiedzi --- */
 .finalQuestionPlayersContainer {
-    display: flex;
-}
-
-.finalQuestionShowAnswerButton {
-    font-weight: bold;
-    padding: 20px;
-    color: #eff9ff;
-    font-weight: bolder;
-    font-size: 40px;
-    background-color: #9e6ec3;
-    cursor: pointer;
-    border: 5px solid #eff9ff;
-    border-radius: 15px;
-    margin-top: 20px;
-}
-
-.finalQuestionShowAnswerButton:hover {
-    background: #603d7b;
-}
-
-.finalQuestionCorrectnessButtonsContainer {
-    display: flex;
-    justify-content: space-around;
-}
-.finalQuestionCorrectButton {
-    font-size: 72px;
-    cursor: pointer;
-    padding: 5px;
-}
-
-.finalQuestionIncorrectButton{
-    font-size: 72px;
-    cursor: pointer;
-    padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 28px;
 }
 
 .finalQuestionPlayerAnswerContainer {
-    margin: 40px
+  width: 360px;
+  min-height: 470px;
+  padding: 30px 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeUp 0.7s var(--ease-out) both;
+  transition: border-color 0.4s, background 0.4s, box-shadow 0.4s;
+}
+.finalQuestionPlayerAnswerContainer:nth-child(2) { animation-delay: 0.1s; }
+.finalQuestionPlayerAnswerContainer:nth-child(3) { animation-delay: 0.2s; }
+.finalQuestionPlayerAnswerContainer:nth-child(4) { animation-delay: 0.3s; }
+
+.finalQuestionPlayerAnswerContainer.isCorrect {
+  border-color: var(--pine-300);
+  background: rgba(76, 175, 125, 0.16);
+  box-shadow: 0 0 50px -10px rgba(76, 175, 125, 0.6);
+}
+.finalQuestionPlayerAnswerContainer.isIncorrect {
+  border-color: var(--cranberry-400);
+  background: rgba(208, 67, 79, 0.16);
+  box-shadow: 0 0 50px -10px rgba(208, 67, 79, 0.55);
 }
 
 .finalQuestionPlayerName {
-    font-size: 40px;
-    font-weight: bold;
+  font-size: 36px;
+  margin-top: 18px;
 }
 
 .finalQuestionPlayerScore {
-    font-size: 30px;
-    font-weight: bold;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--gold-200);
+}
+.finalQuestionPlayerScore span {
+  display: inline-block;
+  animation: scorePop 0.7s var(--ease-spring);
 }
 
-.finalQuestionCurrency {
-    font-size: 30px;
-    margin-left: 10px;
+.finalQuestionShowAnswerButton {
+  margin: auto 0;
+  width: 100%;
+  padding: 26px 0;
+  font-size: 44px;
+  letter-spacing: 0.1em;
+  color: var(--cream);
+  border-radius: 18px;
+  background: linear-gradient(170deg, var(--cranberry-400), var(--cranberry-500) 45%, var(--cranberry-700));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 16px 28px -14px rgba(181, 38, 47, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition: transform 0.25s var(--ease-spring), filter 0.25s;
+}
+.finalQuestionShowAnswerButton:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.1);
 }
 
+.finalQuestionReveal {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--frost-line);
+  animation: popIn 0.5s var(--ease-spring) both;
+}
 .finalQuestionPlayerAnswerHeader {
-    font-size: 30px;
-    margin-top: 20px;
+  font-size: 13px;
 }
-
 .finalQuestionPlayerAnswer {
-    font-size: 30px;
-    font-weight: bold;
+  font-size: 34px;
+  margin: 6px 0 10px;
+  overflow-wrap: anywhere;
+}
+.finalQuestionPlayerBetAmount {
+  font-size: 19px;
+  color: var(--cream-dim);
+}
+.finalQuestionPlayerBetAmount b {
+  color: var(--cream);
 }
 
-.finalQuestionPlayerBetAmount {
-    font-size: 30px;
-    font-weight: bold;
+.finalQuestionCorrectnessButtonsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+.finalQuestionCorrectButton,
+.finalQuestionIncorrectButton {
+  width: 70px;
+  height: 70px;
+  font-size: 28px;
+}
+
+@keyframes tick {
+  from { transform: scale(1.25); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}
+
+.finalQuestionCorrectAnswer {
+  min-height: 92px;
+  margin-bottom: 26px;
+  display: grid;
+  place-items: center;
 }

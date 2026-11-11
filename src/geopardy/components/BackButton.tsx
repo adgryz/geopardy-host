@@ -2,12 +2,13 @@ import "./backButton.css";
 
 interface IBackButtonProps {
   onClick: () => void;
+  label?: string;
 }
 
-export const BackButton = ({ onClick }: IBackButtonProps) => {
+export const BackButton = ({ onClick, label = "Powrót" }: IBackButtonProps) => {
   return (
-    <div className="backButton" onClick={onClick}>
-      POWRÓT
-    </div>
+    <button type="button" className="pillBtn backButton" onClick={onClick}>
+      {label}
+    </button>
   );
 };

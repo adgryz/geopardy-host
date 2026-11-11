@@ -1,73 +1,97 @@
-.lobbyContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    width: 100vw;
-    height: 100vh;
-    background-color: #9e6ec3;
-    color:  #eff9ff;
-    font-size: 24px;
-}
-
 .lobbyContentContainer {
-    position: fixed;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: min(1300px, 92vw);
+  margin-top: 4vh;
 }
 
-.tournamentIdInfo {
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.tournamentId {
-    font-weight: 900;
-    color: #9e6ec3;;
+.lobbyContentContainer .eyebrow {
+  font-size: 18px;
 }
 
 .waitingForPlayers {
-    margin-bottom: 10px;
-    font-weight: bold;
-    font-size: 40px;
+  font-size: clamp(64px, 8vw, 120px);
+  margin: 6px 0 2vh;
 }
-
-.lobbyLabel {
-    margin-bottom: 10px;
+.waitingForPlayers .goldText {
+  display: inline-block;
+  animation: popIn 0.5s var(--ease-spring) both;
+}
+.waitingForPlayersTotal {
+  color: var(--cream-dim);
+  font-weight: 500;
+  font-size: 0.55em;
+  margin-left: 0.08em;
 }
 
 .playersList {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items:  flex-start;
-    max-height: 240px;
-    width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 34px;
+  min-height: 250px;
+  margin-bottom: 4vh;
 }
 
+/* gracze wiszą jak bombki */
 .lobbyPlayerContainer {
-    margin-bottom: 5px;
-    display: flex;
-    margin-right: 40px;
-    margin-bottom: 20px;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 150px;
+  transform-origin: 50% 0;
+  animation: baubleDrop 0.8s var(--ease-spring) both,
+    sway 3.6s ease-in-out 0.8s infinite alternate;
+}
+.lobbyPlayerContainer:nth-child(2n) {
+  animation-duration: 0.8s, 4.3s;
+}
+.lobbyPlayerContainer:nth-child(3n) {
+  animation-duration: 0.8s, 3.1s;
+}
+.lobbyPlayerContainer:nth-child(2n) .baubleThread {
+  height: 62px;
+}
+.lobbyPlayerContainer:nth-child(3n) .baubleThread {
+  height: 24px;
 }
 
-.lobbyPlayerAvatar {
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    margin-right: 10px;
+.baubleThread {
+  width: 1.5px;
+  height: 40px;
+  background: linear-gradient(rgba(233, 196, 106, 0), var(--gold-400));
+}
+.baubleCap {
+  width: 22px;
+  height: 12px;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(90deg, var(--gold-600), var(--gold-200) 45%, var(--gold-600));
+  margin-bottom: 3px;
 }
 
 .lobbyPlayerName {
-    font-weight: bold;
+  margin-top: 14px;
+  font-weight: 700;
+  font-size: 22px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lobbyEmptySlot {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  border: 2px dashed var(--frost-line);
+  background: var(--frost);
+}
+.lobbyPlayerContainer.isEmpty {
+  opacity: 0.7;
+}
+.lobbyPlayerContainer.isEmpty .baubleCap {
+  opacity: 0.35;
+}
+
+@keyframes baubleDrop {
+  from { opacity: 0; transform: translateY(-60px) rotate(-8deg); }
+  to { opacity: 1; transform: none; }
 }

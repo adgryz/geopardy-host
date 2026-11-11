@@ -1,11 +1,20 @@
-.createTournamentContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.createTournamentContainer .stageContent {
+  margin-top: -6vh;
+}
 
-    width: 100vw;
-    height: 100vh;
+.createTournamentAction {
+  margin-top: 7vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeUp 0.9s var(--ease-out) 0.25s both;
+}
 
-    background-color: #eff9ff;
-    color: #222222;
+.createTournamentConnecting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--cream-dim);
+  font-size: 15px;
+  letter-spacing: 0.08em;
 }

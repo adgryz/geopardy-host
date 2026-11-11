@@ -1,32 +1,88 @@
 .geopardy {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 10px;
-    background-color:#eff9ff;
-    height: 100vh;
-    background-color: #eff9ff;
+  justify-content: flex-start;
+}
+
+.geopardyContent {
+  --board-gap: clamp(8px, 1.1vh, 14px);
+  position: relative;
+  z-index: 3;
+  width: min(1640px, 95vw);
+  height: 100vh;
+  padding: 2.2vh 0 2.6vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2.2vh;
+}
+
+.geopardyTopBar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roundBadge {
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 15px;
+}
+.roundBadge .display {
+  font-size: 46px;
+  font-style: italic;
 }
 
 .questionsBoard {
-    display: flex;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--board-gap);
 }
 
 .fullQuestionColumn {
-    width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--board-gap);
+  min-height: 0;
 }
 
+/* nagłówek kategorii — żurawinowa wstążka */
 .groupName {
-    background-color: #357ecf;
-    border: 3px solid #eff9ff;
-    border-radius: 5px;
-    font-size: 36px;
-    font-weight: 900;
-    color: #eff9ff;;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 140px;
-    cursor: default;
-    text-align: center;
+  position: relative;
+  flex: none;
+  height: clamp(84px, 13vh, 132px);
+  padding: 8px 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: default;
+  border-radius: 16px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(20px, 2vw, 32px);
+  line-height: 1.1;
+  color: var(--cream);
+  background: linear-gradient(170deg, var(--cranberry-400), var(--cranberry-500) 45%, var(--cranberry-700));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 14px 26px -16px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  animation: tileIn 0.5s var(--ease-out) both;
+  animation-delay: calc(var(--col, 0) * 45ms);
+}
+.groupName::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 9px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
+  opacity: 0.8;
 }
