@@ -1199,7 +1199,7 @@ export const finalGameSetupBase: IGameSetupBase = {
       ],
     },
     {
-      groupName: "Amiga",
+      groupName: "Intercontinental Bajers",
       icon: faDog,
       questionsGroupType: "text",
       questions: [
@@ -1263,7 +1263,7 @@ export const finalGameSetupBase: IGameSetupBase = {
       ],
     },
     {
-      groupName: "Okazyjne chlanie",
+      groupName: "Procenty",
       icon: faBeerMugEmpty,
       questionsGroupType: "text",
       questions: [
@@ -1329,7 +1329,7 @@ export const finalGameSetupBase: IGameSetupBase = {
       ],
     },
     {
-      groupName: "Święte za życia",
+      groupName: "Święci",
       icon: faCross,
       questionsGroupType: "text",
       questions: [
@@ -1435,7 +1435,7 @@ export const finalGameSetupBase: IGameSetupBase = {
       ],
     },
     {
-      groupName: "Święte Chlanie",
+      groupName: "Boskie Trunki",
       icon: faWineGlass,
       questionsGroupType: "text",
       questions: [
