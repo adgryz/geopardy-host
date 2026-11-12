@@ -110,6 +110,12 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
+.gamesCount {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
+}
 .gameSizesList {
   display: flex;
   flex-wrap: wrap;

@@ -11,6 +11,10 @@ import "./lobby.css";
 // Te same limity co na serwerze
 const MIN_GAME_SIZE = 1;
 const MAX_GAME_SIZE = 12;
+// Zestawy pytań są na 3 gry kwalifikacyjne
+const MIN_GAMES_COUNT = 1;
+const MAX_GAMES_COUNT = 3;
+const DEFAULT_GAME_SIZE = 3;
 
 export const Lobby = () => {
   const {
@@ -51,6 +55,14 @@ export const Lobby = () => {
       )
     );
   };
+  const addGame = () => setGameSizes([...gameSizes, DEFAULT_GAME_SIZE]);
+  const lastGameSize = gameSizes[gameSizes.length - 1] ?? 0;
+  // Usunąć grę można tylko, jeśli dołączeni gracze dalej się zmieszczą
+  const canRemoveGame =
+    gameSizes.length > MIN_GAMES_COUNT &&
+    (playersCountToStartTheTournament || 0) - lastGameSize >=
+      playersArray.length;
+  const removeGame = () => setGameSizes(gameSizes.slice(0, -1));
   const emptySlots = Math.max(
     0,
     (playersCountToStartTheTournament || 0) - playersArray.length
@@ -74,6 +86,33 @@ export const Lobby = () => {
         </div>
         {gameSizes.length > 0 && (
           <div className="gameSizes">
+            <div className="gamesCount">
+              <span className="gameSizesLabel">Gry kwalifikacyjne</span>
+              <div className="gameSizeStepper">
+                <button
+                  type="button"
+                  className="gameSizeButton"
+                  aria-label="Usuń grę kwalifikacyjną"
+                  disabled={!canRemoveGame}
+                  onClick={removeGame}
+                >
+                  −
+                </button>
+                <span className="gameSizeValue display">
+                  {gameSizes.length}
+                </span>
+                <button
+                  type="button"
+                  className="gameSizeButton"
+                  aria-label="Dodaj grę kwalifikacyjną"
+                  disabled={gameSizes.length >= MAX_GAMES_COUNT}
+                  onClick={addGame}
+                >
+                  +
+                </button>
+              </div>
+              <span className="gameSizesLabel">+ finał</span>
+            </div>
             <div className="gameSizesLabel">Liczba graczy w grach</div>
             <div className="gameSizesList">
               {gameSizes.map((gameSize, index) => (
