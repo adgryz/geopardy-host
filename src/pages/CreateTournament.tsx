@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { Button } from "@chakra-ui/react";
+import { useContext, useState } from "react";
+import { Button, Checkbox } from "@chakra-ui/react";
 
 import { AppContext } from "../services/SocketProvider";
 import { Scenery } from "../festive/Scenery";
@@ -10,6 +10,7 @@ import "./createTournament.css";
 export const CreateTournament = () => {
   const { isConnected, sendCreateTournament, activeTournamentId, resumeTournament } =
     useContext(AppContext);
+  const [isLite, setIsLite] = useState(false);
 
   return (
     <div className="stage createTournamentContainer">
@@ -26,10 +27,22 @@ export const CreateTournament = () => {
             colorScheme="primary"
             size="lg"
             variant={activeTournamentId ? "outline" : "solid"}
-            onClick={sendCreateTournament}
+            onClick={() => sendCreateTournament(isLite)}
           >
             {activeTournamentId ? "Stwórz nowy turniej" : "Stwórz Turniej"}
           </Button>
+          <Checkbox
+            className="createTournamentLite"
+            colorScheme="primary"
+            size="lg"
+            isChecked={isLite}
+            onChange={(event) => setIsLite(event.target.checked)}
+          >
+            Wersja lite
+            <span className="createTournamentLiteHint">
+              tylko pierwsza runda i pytanie finałowe
+            </span>
+          </Checkbox>
           {!isConnected && (
             <div className="createTournamentConnecting">
               <span className="loader" />

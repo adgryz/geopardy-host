@@ -160,7 +160,9 @@ interface AppData {
   players: Player[];
   connectedPlayerIds: string[];
   games: Record<string, Game>;
-  sendCreateTournament: () => void;
+  sendCreateTournament: (isLite?: boolean) => void;
+  // lite version – the second round is skipped
+  isLite: boolean;
   sendStartTournament: () => void;
   removePlayer: (playerId: string) => void;
 
@@ -210,6 +212,7 @@ export const AppContext = createContext<AppData>({
   resumeTournament: () => {},
   resetTournament: () => {},
   sendCreateTournament: () => {},
+  isLite: false,
   sendStartTournament: () => {},
   removePlayer: () => {},
   gameSizes: [],
@@ -275,6 +278,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   const [tournamentId, setTournamentId] = useState<string | undefined>();
 
   const [game, setGame] = useState<IGameSetup>(firstGameSetup);
+  const [isLite, setIsLite] = useState(false);
   const [roundNumber, setRoundNumber] = useState<1 | 2>(1);
   const [currentQuestionPoints, setCurrentQuestionPoints] = useState<number>(0);
   const [activeQuestion, setActiveQuestion] = useState<{
@@ -355,6 +359,8 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     setTournamentId(state.tournamentId);
     setPlayersCountToStartTheTournament(state.playersCount);
     setGameSizesState(state.gameSizes ?? []);
+    const isLiteTournament = !!state.isLite;
+    setIsLite(isLiteTournament);
     setPlayers(state.players);
     setConnectedPlayerIds(state.connectedPlayerIds);
     setGames(state.games);
@@ -388,7 +394,8 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
       setRoundNumber(
         question
           ? question.roundNumber
-          : areAllQuestionsAnswered(board.firstQuestionsGroup)
+          : !isLiteTournament &&
+            areAllQuestionsAnswered(board.firstQuestionsGroup)
           ? 2
           : 1
       );
@@ -417,7 +424,13 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         targetPath = "/finalQuestion";
       } else if (question) {
         targetPath = `/question/${question.id}`;
-      } else if (areAllQuestionsAnswered(board.secondQuestionsGroup)) {
+      } else if (
+        areAllQuestionsAnswered(
+          isLiteTournament
+            ? board.firstQuestionsGroup
+            : board.secondQuestionsGroup
+        )
+      ) {
         socket.emit(SEND_START_FINAL_QUESTION, {
           tournamentId: state.tournamentId,
         });
@@ -437,7 +450,8 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     setActiveQuestion(null);
     setAnsweringPlayerId(undefined);
 
-    if (roundNumber === 1) {
+    // In the lite version the first round is the last one
+    if (roundNumber === 1 && !isLite) {
       if (areAllQuestionsAnswered(game.firstQuestionsGroup)) {
         setRoundNumber(2);
       }
@@ -445,7 +459,11 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
       return;
     }
 
-    if (areAllQuestionsAnswered(game.secondQuestionsGroup)) {
+    if (
+      areAllQuestionsAnswered(
+        roundNumber === 1 ? game.firstQuestionsGroup : game.secondQuestionsGroup
+      )
+    ) {
       sendStartFinalQuestion();
       navigate("/finalQuestion");
       return;
@@ -573,7 +591,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
   // Socket senders
 
   // Tournament
-  const sendCreateTournament = () => {
+  const sendCreateTournament = (isLite = false) => {
     if (
       activeTournamentId &&
       !window.confirm(
@@ -582,7 +600,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
     ) {
       return;
     }
-    socket.emit(SEND_CREATE_TOURNAMENT);
+    socket.emit(SEND_CREATE_TOURNAMENT, { isLite });
   };
   const resumeTournament = () => {
     if (!activeTournamentId) return;
@@ -605,10 +623,12 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
       tournamentId,
       playersCount,
       gameSizes,
+      isLite,
     }: {
       tournamentId: string;
       playersCount: number;
       gameSizes?: number[];
+      isLite?: boolean;
     }) => {
       resetTournamentState();
       saveHostTournamentId(tournamentId);
@@ -616,6 +636,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
       setTournamentId(tournamentId);
       setPlayersCountToStartTheTournament(playersCount);
       setGameSizesState(gameSizes ?? []);
+      setIsLite(!!isLite);
       navigate("/lobby");
     }
   );
@@ -819,6 +840,7 @@ export const SocketProvider = ({ children }: ISocketProviderProps) => {
         isConnected,
 
         sendCreateTournament,
+        isLite,
         sendStartTournament,
         activeTournamentId,
         resumeTournament,

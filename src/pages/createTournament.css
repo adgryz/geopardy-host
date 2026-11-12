@@ -18,3 +18,15 @@
   font-size: 15px;
   letter-spacing: 0.08em;
 }
+
+.createTournamentLite {
+  margin-top: 28px;
+  color: var(--cream);
+}
+
+.createTournamentLiteHint {
+  display: block;
+  color: var(--cream-dim);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}

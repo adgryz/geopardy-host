@@ -94,6 +94,8 @@ export type HostState = {
   tournamentId: string;
   playersCount: number;
   gameSizes?: number[];
+  // lite version – only the first round and the final question are played
+  isLite?: boolean;
   players: Player[];
   games: Record<string, Game>;
   finalGame: Game;
